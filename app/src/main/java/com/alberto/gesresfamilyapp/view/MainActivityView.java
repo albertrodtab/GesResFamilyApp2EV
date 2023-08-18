@@ -37,7 +37,7 @@ public class MainActivityView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivityView.this, ProfesionalesActivity.class));
+                startActivity(new Intent(MainActivityView.this, ProfesionalesListView.class));
             }
         });
 
@@ -45,7 +45,7 @@ public class MainActivityView extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivityView.this, ResidentesActivity.class));
+                startActivity(new Intent(MainActivityView.this, ResidentesListView.class));
             }
         });
 

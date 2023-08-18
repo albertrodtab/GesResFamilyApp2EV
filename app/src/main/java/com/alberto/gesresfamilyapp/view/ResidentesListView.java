@@ -16,23 +16,29 @@ import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.adapter.ResidenteAdapter;
+import com.alberto.gesresfamilyapp.contract.ResidentesListContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Residente;
-import com.alberto.gesresfamilyapp.view.RegisterResidenteActivity;
+import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
+import com.alberto.gesresfamilyapp.presenter.ResidentesListPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResidentesActivity extends AppCompatActivity {
+public class ResidentesListView extends AppCompatActivity implements ResidentesListContract.view {
 
     public static List<Residente> residentesList = new ArrayList<>();
     private ResidenteAdapter adapter;
+
+    private ResidentesListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_residentes);
+
+        presenter = new ResidentesListPresenter(this);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -45,8 +51,10 @@ public class ResidentesActivity extends AppCompatActivity {
                 onBackPressed(); // Ejemplo: retroceder a la actividad anterior
             }
         });
+        initializeRecyclerView();
+    }
 
-
+    private void initializeRecyclerView(){
         residentesList = new ArrayList<>();
 
         RecyclerView recyclerView = findViewById(R.id.residentes_list);
@@ -64,13 +72,7 @@ public class ResidentesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
-                .allowMainThreadQueries().build();
-        residentesList.clear();
-        residentesList.addAll(db.residenteDao().getAll());
-        // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
-        adapter.notifyDataSetChanged();
+        presenter.loadAllResidentes();
     }
 
     @Override
@@ -94,4 +96,16 @@ public class ResidentesActivity extends AppCompatActivity {
         onBackPressed();
     }
 
+    @Override
+    public void showResidentes(List<Residente> residentes) {
+        residentesList.clear();
+        residentesList.addAll(residentes);
+        // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
 }
