@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp;
+package com.alberto.gesresfamilyapp.view;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.room.Room;
 
+import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.google.android.material.appbar.MaterialToolbar;
