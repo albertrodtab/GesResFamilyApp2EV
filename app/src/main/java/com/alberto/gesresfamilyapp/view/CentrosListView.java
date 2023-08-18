@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp;
+package com.alberto.gesresfamilyapp.view;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -13,26 +13,32 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toolbar;
 
+import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
+import com.alberto.gesresfamilyapp.contract.CentrosListContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
+import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CentrosActivity extends AppCompatActivity {
+public class CentrosListView extends AppCompatActivity implements CentrosListContract.view {
 
     public static List<Centro> centroList = new ArrayList<>();
     private CentroAdapter adapter;
+
+    private CentrosListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_centros);
+
+        presenter = new CentrosListPresenter(this);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -45,9 +51,11 @@ public class CentrosActivity extends AppCompatActivity {
                 onBackPressed(); // Ejemplo: retroceder a la actividad anterior
             }
         });
+        initializeRecyclerView();
+    }
 
+    private void initializeRecyclerView(){
         centroList = new ArrayList<>();
-
         RecyclerView recyclerView = findViewById(R.id.centros_list);
         //esto le dice que tenga un tamaño fijo y que ocupe el máximo espacio asignado
         recyclerView.setHasFixedSize(true);
@@ -63,13 +71,7 @@ public class CentrosActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
-                .allowMainThreadQueries().build();
-        centroList.clear();
-        centroList.addAll(db.centroDao().getAll());
-        // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
-        adapter.notifyDataSetChanged();
+        presenter.loadAllCentros();
     }
 
     @Override
@@ -97,4 +99,17 @@ public class CentrosActivity extends AppCompatActivity {
         onBackPressed();
     }
 
+    @Override
+    public void showCentros(List<Centro> centros) {
+        centroList.clear();
+        centroList.addAll(centros);
+        // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
 }

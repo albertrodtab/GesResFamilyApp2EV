@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp;
+package com.alberto.gesresfamilyapp.view;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -11,19 +11,20 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
 
+import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Residente;
+import com.alberto.gesresfamilyapp.domain.Profesional;
 
 import java.util.List;
 
-public class ViewResidenteActivity extends AppCompatActivity {
+public class ViewProfesionalActivity extends AppCompatActivity {
 
-    public List<Residente> residentes;
+    public List<Profesional> profesionales;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_residente);
+        setContentView(R.layout.activity_view_profesional);
 
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
@@ -33,30 +34,29 @@ public class ViewResidenteActivity extends AppCompatActivity {
         // Cargo los detalles de la tarea
         final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
-        Residente residente = db.residenteDao().getByName(name);
-        fillData(residente);
+        Profesional profesional = db.profesionalDao().getByName(name);
+        fillData(profesional);
 
     }
 
-    private void fillData(Residente residente) {
+    private void fillData(Profesional profesional) {
         TextView name = findViewById(R.id.tvNombre);
         TextView apellidos = findViewById(R.id.tvApellidos);
         TextView dni = findViewById(R.id.tvDni);
         //TextView fechaNac = findViewById(R.id.tvProfesionalFechaNac);
-        TextView sexo = findViewById(R.id.tvSexo);
-        ImageView foto = findViewById(R.id.ivResidente);
+        TextView categoria = findViewById(R.id.tvCategoria);
+        ImageView foto = findViewById(R.id.ivProfesional);
 
 
-        name.setText(residente.getNombre());
-        apellidos.setText(residente.getApellidos());
-        dni.setText(residente.getDni());
-        //fechaNac.setText((CharSequence) residente.getFechaNacimiento());
-        sexo.setText(residente.getSexo());
+        name.setText(profesional.getNombre());
+        apellidos.setText(profesional.getApellidos());
+        dni.setText(profesional.getDni());
+        //fechaNac.setText((CharSequence) profesional.getFechaNacimiento());
+        categoria.setText(profesional.getCategoria());
     }
 
     public void cancel(View view) {
         onBackPressed();
     }
-
 
 }

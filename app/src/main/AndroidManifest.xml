@@ -40,34 +40,34 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <activity
-            android:name=".RegisterCentroActivity"
+            android:name=".view.RegisterCentroActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewCentroActivity"
+            android:name=".view.ViewCentroActivity"
             android:exported="false" />
         <activity
-            android:name=".CentrosActivity"
+            android:name=".view.CentrosListView"
             android:exported="false" />
         <activity
-            android:name=".ProfesionalesActivity"
+            android:name=".view.ProfesionalesActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterProfesionalActivity"
+            android:name=".view.RegisterProfesionalActivity"
             android:exported="false" />
         <activity
-            android:name=".ResidentesActivity"
+            android:name=".view.ResidentesActivity"
             android:exported="false" />
         <activity
-            android:name=".ViewResidenteActivity"
+            android:name=".view.ViewResidenteActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterResidenteActivity"
+            android:name=".view.RegisterResidenteActivity"
             android:exported="false" />
         <activity
-            android:name=".MapsActivity"
+            android:name=".view.MapsActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.MainActivityView"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

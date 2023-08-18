@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp;
+package com.alberto.gesresfamilyapp.view;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.adapter.ResidenteAdapter;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Residente;
+import com.alberto.gesresfamilyapp.view.RegisterResidenteActivity;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;

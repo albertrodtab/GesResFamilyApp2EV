@@ -15,10 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.RegisterProfesionalActivity;
-import com.alberto.gesresfamilyapp.RegisterResidenteActivity;
+import com.alberto.gesresfamilyapp.view.RegisterResidenteActivity;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.alberto.gesresfamilyapp.domain.Residente;
 import com.bumptech.glide.Glide;
 
