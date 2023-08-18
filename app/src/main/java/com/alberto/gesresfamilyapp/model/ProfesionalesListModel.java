@@ -6,33 +6,33 @@ import android.content.Context;
 
 import androidx.room.Room;
 
-import com.alberto.gesresfamilyapp.contract.CentrosListContract;
+import com.alberto.gesresfamilyapp.contract.ProfesionalesListContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Centro;
+import com.alberto.gesresfamilyapp.domain.Profesional;
 
 import java.util.List;
 
-public class CentrosListModel implements CentrosListContract.Model {
+public class ProfesionalesListModel implements ProfesionalesListContract.Model {
 
     private Context context;
 
-    public CentrosListModel(Context context) {
+    public ProfesionalesListModel(Context context) {
         this.context = context;
     }
     @Override
-    public List<Centro> loadAllCentros() {
+    public List<Profesional> loadAllProfesionales() {
         final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
-        return db.centroDao().getAll();
+        return db.profesionalDao().getAll();
     }
 
     @Override
-    public List<Centro> loadCentrosByName(String name) {
+    public List<Profesional> loadProfesionalesByName(String name) {
         return null;
     }
 
     @Override
-    public boolean deleteCentro(String name) {
+    public boolean deleteProfesional(String name) {
         return false;
     }
 }

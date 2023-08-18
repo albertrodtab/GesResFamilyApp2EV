@@ -49,13 +49,13 @@
             android:name=".view.CentrosListView"
             android:exported="false" />
         <activity
-            android:name=".view.ProfesionalesActivity"
+            android:name=".view.ProfesionalesListView"
             android:exported="false" />
         <activity
             android:name=".view.RegisterProfesionalActivity"
             android:exported="false" />
         <activity
-            android:name=".view.ResidentesActivity"
+            android:name=".view.ResidentesListView"
             android:exported="false" />
         <activity
             android:name=".view.ViewResidenteActivity"
