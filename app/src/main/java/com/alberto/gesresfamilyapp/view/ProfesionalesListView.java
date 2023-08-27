@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp;
+package com.alberto.gesresfamilyapp.view;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -14,23 +14,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.adapter.ProfesionalAdapter;
+import com.alberto.gesresfamilyapp.contract.ProfesionalesListContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
+import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
+import com.alberto.gesresfamilyapp.presenter.ProfesionalesListPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfesionalesActivity extends AppCompatActivity {
+public class ProfesionalesListView extends AppCompatActivity implements ProfesionalesListContract.view {
 
     public static List<Profesional> profesionalesList = new ArrayList<>();
     private ProfesionalAdapter adapter;
+
+    private ProfesionalesListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profesionales);
+
+        presenter = new ProfesionalesListPresenter(this);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -43,7 +51,10 @@ public class ProfesionalesActivity extends AppCompatActivity {
                 onBackPressed(); // Ejemplo: retroceder a la actividad anterior
             }
         });
+        initializeRecyclerView();
+    }
 
+        private void initializeRecyclerView(){
         profesionalesList = new ArrayList<>();
 
         RecyclerView recyclerView = findViewById(R.id.profesionales_list);
@@ -61,13 +72,11 @@ public class ProfesionalesActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.loadAllProfesionales();
 
         final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
-        profesionalesList.clear();
-        profesionalesList.addAll(db.profesionalDao().getAll());
-        // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
-        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -89,6 +98,20 @@ public class ProfesionalesActivity extends AppCompatActivity {
 
     public void cancel(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public void showProfesionales(List<Profesional> profesionales) {
+        profesionalesList.clear();
+        profesionalesList.addAll(profesionales);
+        // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
+        adapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
     }
 }
 

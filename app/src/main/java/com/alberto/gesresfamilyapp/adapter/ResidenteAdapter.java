@@ -9,18 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.RegisterProfesionalActivity;
-import com.alberto.gesresfamilyapp.RegisterResidenteActivity;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.alberto.gesresfamilyapp.domain.Residente;
+import com.alberto.gesresfamilyapp.view.RegisterResidenteActivity;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
@@ -53,16 +51,16 @@ public class ResidenteAdapter extends RecyclerView.Adapter<ResidenteAdapter.Resi
     //hace corresponder cada elemento de la lista para decir como pintarlo en cada elemento del layout
     @Override
     public void onBindViewHolder(ResidenteHolder holder, int position){
-        holder.residenteNombre.setText(residenteList.get(position).getNombre());
-        holder.residenteApellidos.setText(residenteList.get(position).getApellidos());
-        holder.residenteDni.setText(residenteList.get(position).getDni());
+        holder.residenteNombre.getEditText().setText(residenteList.get(position).getNombre());
+        holder.residenteApellidos.getEditText().setText(residenteList.get(position).getApellidos());
+        holder.residenteDni.getEditText().setText(residenteList.get(position).getDni());
         //Date fechaNacimiento = profesionalList.get(position).getFechaNacimiento();
         //String fechaNacimientoString = "";
         //if (fechaNacimiento != null) {
         //    fechaNacimientoString = fechaNacimiento.toString(); // Convertir Date a String
         //}
         //holder.profesionalFechaNac.setText(fechaNacimientoString);
-        holder.residenteSexo.setText(residenteList.get(position).getSexo());
+        holder.residenteSexo.getEditText().setText(residenteList.get(position).getSexo());
 
         Residente residente = residenteList.get(position);
 
@@ -87,10 +85,10 @@ public class ResidenteAdapter extends RecyclerView.Adapter<ResidenteAdapter.Resi
     }
 
     public class ResidenteHolder extends RecyclerView.ViewHolder{
-        public TextView residenteNombre;
-        public TextView residenteApellidos;
-        public TextView residenteDni;
-        public TextView residenteSexo;
+        public TextInputLayout residenteNombre;
+        public TextInputLayout residenteApellidos;
+        public TextInputLayout residenteDni;
+        public TextInputLayout residenteSexo;
         //public TextView profesionalFechaNac;
         public ImageView residenteImagen;
 
@@ -105,11 +103,11 @@ public class ResidenteAdapter extends RecyclerView.Adapter<ResidenteAdapter.Resi
             super(view);
             parentView = view;
 
-            residenteNombre = view.findViewById(R.id.tvNombre);
-            residenteApellidos = view.findViewById(R.id.tvApellidos);
-            residenteDni = view.findViewById(R.id.tvDni);
+            residenteNombre = view.findViewById(R.id.tilNombre);
+            residenteApellidos = view.findViewById(R.id.tilApellidos);
+            residenteDni = view.findViewById(R.id.tilDni);
             //profesionalFechaNac = view.findViewById(R.id.tvProfesionalFechaNac);
-            residenteSexo = view.findViewById(R.id.tvSexo);
+            residenteSexo = view.findViewById(R.id.tilSexo);
             residenteImagen = view.findViewById(R.id.ivResidente);
 
 

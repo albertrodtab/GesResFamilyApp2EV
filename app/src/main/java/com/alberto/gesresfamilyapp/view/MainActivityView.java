@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp;
+package com.alberto.gesresfamilyapp.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+import com.alberto.gesresfamilyapp.R;
+
+public class MainActivityView extends AppCompatActivity {
 
     Button btCentros;
     Button btProfesionales;
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivity.this, CentrosActivity.class));
+                startActivity(new Intent(MainActivityView.this, CentrosListView.class));
             }
         });
 
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivity.this, ProfesionalesActivity.class));
+                startActivity(new Intent(MainActivityView.this, ProfesionalesListView.class));
             }
         });
 
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(MainActivity.this, ResidentesActivity.class));
+                startActivity(new Intent(MainActivityView.this, ResidentesListView.class));
             }
         });
 

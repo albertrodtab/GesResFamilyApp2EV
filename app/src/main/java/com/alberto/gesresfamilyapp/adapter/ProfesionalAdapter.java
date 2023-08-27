@@ -9,18 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.RegisterProfesionalActivity;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
+import com.alberto.gesresfamilyapp.view.RegisterProfesionalActivity;
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.Date;
 import java.util.List;
 
 public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.ProfesionalHolder>{
@@ -52,16 +51,16 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
     //hace corresponder cada elemento de la lista para decir como pintarlo en cada elemento del layout
     @Override
     public void onBindViewHolder(ProfesionalHolder holder, int position){
-        holder.profesionalNombre.setText(profesionalList.get(position).getNombre());
-        holder.profesionalApellidos.setText(profesionalList.get(position).getApellidos());
-        holder.profesionalDni.setText(profesionalList.get(position).getDni());
+        holder.profesionalNombre.getEditText().setText(profesionalList.get(position).getNombre());
+        holder.profesionalApellidos.getEditText().setText(profesionalList.get(position).getApellidos());
+        holder.profesionalDni.getEditText().setText(profesionalList.get(position).getDni());
         //Date fechaNacimiento = profesionalList.get(position).getFechaNacimiento();
         //String fechaNacimientoString = "";
         //if (fechaNacimiento != null) {
         //    fechaNacimientoString = fechaNacimiento.toString(); // Convertir Date a String
         //}
         //holder.profesionalFechaNac.setText(fechaNacimientoString);
-        holder.profesionalCategoria.setText(profesionalList.get(position).getCategoria());
+        holder.profesionalCategoria.getEditText().setText(profesionalList.get(position).getCategoria());
 
         Profesional profesional = profesionalList.get(position);
 
@@ -86,10 +85,10 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
     }
 
     public class ProfesionalHolder extends RecyclerView.ViewHolder{
-        public TextView profesionalNombre;
-        public TextView profesionalApellidos;
-        public TextView profesionalDni;
-        public TextView profesionalCategoria;
+        public TextInputLayout profesionalNombre;
+        public TextInputLayout profesionalApellidos;
+        public TextInputLayout profesionalDni;
+        public TextInputLayout profesionalCategoria;
         //public TextView profesionalFechaNac;
         public ImageView profesionalImagen;
 
@@ -104,11 +103,11 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             super(view);
             parentView = view;
 
-            profesionalNombre = view.findViewById(R.id.tvNombre);
-            profesionalApellidos = view.findViewById(R.id.tvApellidos);
-            profesionalDni = view.findViewById(R.id.tvDni);
+            profesionalNombre = view.findViewById(R.id.tilNombre);
+            profesionalApellidos = view.findViewById(R.id.tilApellidos);
+            profesionalDni = view.findViewById(R.id.tilDni);
             //profesionalFechaNac = view.findViewById(R.id.tvProfesionalFechaNac);
-            profesionalCategoria = view.findViewById(R.id.tvCategoria);
+            profesionalCategoria = view.findViewById(R.id.tilCategoria);
             profesionalImagen = view.findViewById(R.id.ivProfesional);
 
 
