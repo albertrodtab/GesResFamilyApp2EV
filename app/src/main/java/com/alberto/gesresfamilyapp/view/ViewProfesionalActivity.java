@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.room.Room;
@@ -14,6 +13,7 @@ import androidx.room.Room;
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
@@ -40,19 +40,19 @@ public class ViewProfesionalActivity extends AppCompatActivity {
     }
 
     private void fillData(Profesional profesional) {
-        TextView name = findViewById(R.id.tvNombre);
-        TextView apellidos = findViewById(R.id.tvApellidos);
-        TextView dni = findViewById(R.id.tvDni);
+        TextInputLayout name = findViewById(R.id.tilNombre);
+        TextInputLayout apellidos = findViewById(R.id.tilApellidos);
+        TextInputLayout dni = findViewById(R.id.tilDni);
         //TextView fechaNac = findViewById(R.id.tvProfesionalFechaNac);
-        TextView categoria = findViewById(R.id.tvCategoria);
+        TextInputLayout categoria = findViewById(R.id.tilCategoria);
         ImageView foto = findViewById(R.id.ivProfesional);
 
 
-        name.setText(profesional.getNombre());
-        apellidos.setText(profesional.getApellidos());
-        dni.setText(profesional.getDni());
+        name.getEditText().setText(profesional.getNombre());
+        apellidos.getEditText().setText(profesional.getApellidos());
+        dni.getEditText().setText(profesional.getDni());
         //fechaNac.setText((CharSequence) profesional.getFechaNacimiento());
-        categoria.setText(profesional.getCategoria());
+        categoria.getEditText().setText(profesional.getCategoria());
     }
 
     public void cancel(View view) {
