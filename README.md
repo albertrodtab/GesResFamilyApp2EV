@@ -24,5 +24,6 @@ Junto con el desarrollo de la aplicación se entregará un enunciado con el nomb
 * Hacer uso de mapas en las pantalla donde se registre información. Para indicar información geográfica, por ejemplo
 * El usuario podrá hacer búsquedas para filtrar la información en los listados de datos
 * Diseñar al menos 3 layouts para otras posiciones de la pantalla (portrait/landscape)
+### Realizado
 * Utilizar Material Design para personalizar el diseño de la aplicación
 * Utilizar las credenciales de usuario en la aplicación para comunicarse con la API (si ésta se encuentra securizada con token JWT)
