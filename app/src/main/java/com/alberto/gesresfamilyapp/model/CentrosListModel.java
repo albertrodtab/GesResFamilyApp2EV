@@ -3,30 +3,57 @@ package com.alberto.gesresfamilyapp.model;
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Room;
 
+import com.alberto.gesresfamilyapp.api.GesResApi;
+import com.alberto.gesresfamilyapp.api.GesResApiInterface;
 import com.alberto.gesresfamilyapp.contract.CentrosListContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class CentrosListModel implements CentrosListContract.Model {
 
     private Context context;
 
-    public CentrosListModel(Context context) {
-        this.context = context;
-    }
+    //public CentrosListModel(Context context) {
+        //this.context = context;
+    //}
     @Override
-    public List<Centro> loadAllCentros() {
-        final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
+    public void loadAllCentros(OnLoadCentroListener listener) {
+        /*final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
-        return db.centroDao().getAll();
+        return db.centroDao().getAll();*/
+            GesResApiInterface apiInterface = GesResApi.buildInstance();
+            Call<List<Centro>> callCentros = apiInterface.getCentros();
+            Log.d("centros", "Llamada desde model");
+            callCentros.enqueue(new Callback<List<Centro>>() {
+                @Override
+                public void onResponse(Call<List<Centro>> call, Response<List<Centro>> response) {
+                    Log.d("centros", "Llamada desde model ok");
+                    List<Centro> centroList = response.body();
+                    listener.onLoadCentrosSuccess(centroList);
+                }
+                @Override
+                public void onFailure(Call<List<Centro>> call, Throwable t) {
+                    Log.d("centros", "Llamada desde model error");
+                    Log.d("centros", t.getMessage());
+                    t.printStackTrace();
+                    String message = "Error al conseguir todos los centros";
+                    listener.onLoadCentrosError(t.getMessage());
+                }
+            });
     }
 
-    @Override
+
+/*    @Override
     public List<Centro> loadCentrosByName(String name) {
         return null;
     }
@@ -34,5 +61,5 @@ public class CentrosListModel implements CentrosListContract.Model {
     @Override
     public boolean deleteCentro(String name) {
         return false;
-    }
+    }*/
 }
