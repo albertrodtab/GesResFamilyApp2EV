@@ -1,9 +1,12 @@
 package com.alberto.gesresfamilyapp.view;
 
+import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +17,7 @@ import android.view.View;
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
 import com.alberto.gesresfamilyapp.contract.CentrosListContract;
+import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
