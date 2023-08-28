@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.view.RegisterCentroActivity;
+import com.alberto.gesresfamilyapp.view.RegisterCentroView;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.bumptech.glide.Glide;
@@ -191,7 +191,7 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
                     .setPositiveButton(R.string.si, (dialog, id) -> {
                         Centro centro = centroList.get(position);
 
-                        Intent intent = new Intent(context, RegisterCentroActivity.class);
+                        Intent intent = new Intent(context, RegisterCentroView.class);
                         intent.putExtra("modify_centro", true);
                         intent.putExtra("id", centro.getId());
                         intent.putExtra("nombre", centro.getNombre());

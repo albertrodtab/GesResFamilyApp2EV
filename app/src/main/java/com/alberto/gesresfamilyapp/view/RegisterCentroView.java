@@ -24,19 +24,20 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
+import com.alberto.gesresfamilyapp.contract.RegisterCentroContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
+import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
+import com.alberto.gesresfamilyapp.presenter.RegisterCentroPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mapbox.geojson.Point;
-import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.plugin.annotation.AnnotationConfig;
@@ -52,11 +53,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
-public class RegisterCentroActivity extends AppCompatActivity {
+public class RegisterCentroView extends AppCompatActivity implements RegisterCentroContract.view {
 
     private static final int REQUEST_SELECT_PHOTO = 1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -87,6 +85,8 @@ public class RegisterCentroActivity extends AppCompatActivity {
 
     private Point point; //Guardamos el point para gestionar la latitud y longuitud
     private PointAnnotationManager pointAnnotationManager; //Para anotar el point así es común para todos
+
+    private RegisterCentroPresenter presenter;
 
 
 
@@ -187,6 +187,7 @@ public class RegisterCentroActivity extends AppCompatActivity {
             centro = new Centro();
 
         }
+        presenter = new RegisterCentroPresenter(this);
     }
 
     private void fillData(Centro centro) {
@@ -285,8 +286,8 @@ public class RegisterCentroActivity extends AppCompatActivity {
             centro.setTelefono(telefono);
             centro.setEmail(mail);
             centro.setTieneWifi(tieneWifi);
-            //centro.setLatitude(point.latitude());
-            //centro.setLongitude(point.longitude());
+            centro.setLatitude(point.latitude());
+            centro.setLongitude(point.longitude());
 
             /*if(imageOK){
                 //Guardamos el archivo en el almacenamiento
@@ -305,18 +306,20 @@ public class RegisterCentroActivity extends AppCompatActivity {
                 etTelefono.setText(telefono);
                 cbWifi.setChecked(tieneWifi);
 
+
             } else{
 
-                db.centroDao().update(centro);
-                Toast.makeText(this, R.string.centroModificado, Toast.LENGTH_LONG).show();
+                presenter.registerCentro(centro);
 
-                etNombre.setText("");
+                Toast.makeText(this, R.string.centroModificado, Toast.LENGTH_LONG).show();
+                resetForm();
+                /*etNombre.setText("");
                 etDireccion.setText("");
                 etMail.setText("");
                 etNumRegistro.setText("");
                 etTelefono.setText("");
                 cbWifi.setChecked(false);
-                etNombre.requestFocus();
+                etNombre.requestFocus()*/;
             }
 
         } else {
@@ -341,10 +344,26 @@ public class RegisterCentroActivity extends AppCompatActivity {
                 etNumRegistro.setText(numRegistro);
                 etTelefono.setText(telefono);
                 cbWifi.setChecked(tieneWifi);
+                centro.setLatitude(point.latitude());
+                centro.setLongitude(point.longitude());
 
             } else{
 
-                db.centroDao().insert(centro);
+                centro.setNombre(nombre);
+                centro.setDireccion(direccion);
+                centro.setNumRegistro(numRegistro);
+                centro.setTelefono(telefono);
+                centro.setEmail(mail);
+                centro.setTieneWifi(tieneWifi);
+                centro.setLatitude(point.latitude());
+                centro.setLongitude(point.longitude());
+
+                //Centro centro = new Centro();
+                presenter.registerCentro(centro);
+                resetForm();
+                }
+
+               /* db.centroDao().insert(centro);
                 Toast.makeText(this, R.string.centroRegistado, Toast.LENGTH_LONG).show();
                 etNombre.setText("");
                 etDireccion.setText("");
@@ -352,7 +371,7 @@ public class RegisterCentroActivity extends AppCompatActivity {
                 etNumRegistro.setText("");
                 etTelefono.setText("");
                 cbWifi.setChecked(false);
-                etNombre.requestFocus();
+                etNombre.requestFocus();*/
             } /*else {
                 if (!imageOK) {
                     Toast.makeText(this, "por favor toma una foto", Toast.LENGTH_LONG).show();
@@ -361,8 +380,8 @@ public class RegisterCentroActivity extends AppCompatActivity {
             }*/
         }
 
-        db.close();
-    }
+        //db.close();}
+
 
     private void saveBitmapToFile(Bitmap bitmap, File file) {
         try {
@@ -455,6 +474,30 @@ public class RegisterCentroActivity extends AppCompatActivity {
 
     public void cancel(View view) {
         onBackPressed();
+    }
+
+    @Override
+    public void showError (String errorMessage) {
+        Snackbar.make((findViewById(R.id.etNombre)), errorMessage,
+                BaseTransientBottomBar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Snackbar.make((findViewById(R.id.etNombre)), message,
+                BaseTransientBottomBar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void resetForm() {
+        etNombre.setText("");
+        etDireccion.setText("");
+        etMail.setText("");
+        etNumRegistro.setText("");
+        etTelefono.setText("");
+        cbWifi.setChecked(false);
+        etNombre.requestFocus();
+
     }
 }
 
