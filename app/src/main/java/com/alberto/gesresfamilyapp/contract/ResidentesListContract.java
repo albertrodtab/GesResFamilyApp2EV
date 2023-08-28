@@ -1,6 +1,5 @@
 package com.alberto.gesresfamilyapp.contract;
 
-import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.alberto.gesresfamilyapp.domain.Residente;
 
 import java.util.List;
@@ -8,11 +7,10 @@ import java.util.List;
 public interface ResidentesListContract {
 
     interface Model{
-        interface OnLoadResidenteListener {
-            void onLoadResidenteSuccess(List<Residente> ResidentesList);
-            void onLoadResidenteError(String message);
-        }
-        void loadAllResidentes(ResidentesListContract.Model.OnLoadResidenteListener listener);
+        List<Residente> loadAllResidentes();
+        List<Residente> loadResidentesByName(String name);
+        boolean deleteResidente(String name);
+
     }
 
     interface view{
@@ -22,6 +20,8 @@ public interface ResidentesListContract {
 
     interface Presenter{
         void loadAllResidentes();
+        void loadResidentesByName(String name);
+        void deleteResidente(String name);
     }
 
 }
