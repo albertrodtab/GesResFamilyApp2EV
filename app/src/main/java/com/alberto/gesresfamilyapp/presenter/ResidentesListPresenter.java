@@ -7,33 +7,30 @@ import com.alberto.gesresfamilyapp.view.ResidentesListView;
 
 import java.util.List;
 
-public class ResidentesListPresenter implements ResidentesListContract.Presenter,
-    ResidentesListContract.Model.OnLoadResidenteListener{
+public class ResidentesListPresenter implements ResidentesListContract.Presenter {
 
     private ResidentesListModel model;
     private ResidentesListView view;
 
     public ResidentesListPresenter(ResidentesListView view){
         this.view = view;
-        this.model = new ResidentesListModel();
+        this.model = new ResidentesListModel(view.getApplicationContext());
     }
 
     @Override
     public void loadAllResidentes() {
-        model.loadAllResidentes(this);
-
-    }
-
-
-    @Override
-    public void onLoadResidenteSuccess(List<Residente> ResidentesList) {
-        view.showResidentes(ResidentesList);
+        List<Residente> residentes = model.loadAllResidentes();
+        view.showResidentes(residentes);
 
     }
 
     @Override
-    public void onLoadResidenteError(String message) {
-        view.showMessage(message);
+    public void loadResidentesByName(String name) {
+
+    }
+
+    @Override
+    public void deleteResidente(String name) {
 
     }
 }
