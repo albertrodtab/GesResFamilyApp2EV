@@ -10,32 +10,30 @@ import com.alberto.gesresfamilyapp.view.ProfesionalesListView;
 
 import java.util.List;
 
-public class ProfesionalesListPresenter implements ProfesionalesListContract.Presenter,
-    ProfesionalesListContract.Model.OnLoadProfesionalListener{
+public class ProfesionalesListPresenter implements ProfesionalesListContract.Presenter {
 
     private ProfesionalesListModel model;
     private ProfesionalesListView view;
 
     public ProfesionalesListPresenter(ProfesionalesListView view){
         this.view = view;
-        this.model = new ProfesionalesListModel();
+        this.model = new ProfesionalesListModel(view.getApplicationContext());
     }
 
     @Override
     public void loadAllProfesionales() {
-        model.loadAllProfesionales(this);
-    }
-
-
-    @Override
-    public void onLoadProfesionalSuccess(List<Profesional> ProfesionalesList) {
-        view.showProfesionales(ProfesionalesList);
+        List<Profesional> profesionales = model.loadAllProfesionales();
+        view.showProfesionales(profesionales);
 
     }
 
     @Override
-    public void onLoadProfesionalError(String message) {
-        view.showMessage(message);
+    public void loadProfesionalesByName(String name) {
+
+    }
+
+    @Override
+    public void deleteProfesional(String name) {
 
     }
 }
