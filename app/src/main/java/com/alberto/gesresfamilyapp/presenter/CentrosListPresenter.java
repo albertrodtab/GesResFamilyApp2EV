@@ -7,30 +7,32 @@ import com.alberto.gesresfamilyapp.view.CentrosListView;
 
 import java.util.List;
 
-public class CentrosListPresenter implements CentrosListContract.Presenter {
+public class CentrosListPresenter implements CentrosListContract.Presenter,
+    CentrosListContract.Model.OnLoadCentroListener{
 
     private CentrosListModel model;
     private CentrosListView view;
 
     public CentrosListPresenter(CentrosListView view){
         this.view = view;
-        this.model = new CentrosListModel(view.getApplicationContext());
+        this.model = new CentrosListModel();
     }
 
     @Override
     public void loadAllCentros() {
-        List<Centro> centros = model.loadAllCentros();
-        view.showCentros(centros);
+        model.loadAllCentros(this);
 
     }
 
-    @Override
-    public void loadCentrosByName(String name) {
 
+    @Override
+    public void onLoadCentrosSuccess(List<Centro> centrosList) {
+        view.showCentros(centrosList);
     }
 
     @Override
-    public void deleteCentro(String name) {
+    public void onLoadCentrosError(String message) {
+        view.showMessage(message);
 
     }
 }
