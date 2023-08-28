@@ -20,9 +20,6 @@ public interface GesResApiInterface {
     @GET("centros")
     Call<List<Centro>> getCentros();
 
-    @GET("centro/{id}")
-    Call<Centro> getCentro( Centro centro);
-
     @POST("centros")
     Call<Centro> addCentro(@Body Centro centro);
 
