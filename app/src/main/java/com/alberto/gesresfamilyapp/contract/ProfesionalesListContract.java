@@ -8,11 +8,10 @@ import java.util.List;
 public interface ProfesionalesListContract {
 
     interface Model{
-        interface OnLoadProfesionalListener {
-            void onLoadProfesionalSuccess(List<Profesional> ProfesionalesList);
-            void onLoadProfesionalError(String message);
-        }
-        void loadAllProfesionales(ProfesionalesListContract.Model.OnLoadProfesionalListener listener);
+        List<Profesional> loadAllProfesionales();
+        List<Profesional> loadProfesionalesByName(String name);
+        boolean deleteProfesional(String name);
+
     }
 
     interface view{
@@ -22,8 +21,8 @@ public interface ProfesionalesListContract {
 
     interface Presenter{
         void loadAllProfesionales();
-        /*void loadProfesionalesByName(String name);
-        void deleteProfesional(String name);*/
+        void loadProfesionalesByName(String name);
+        void deleteProfesional(String name);
     }
 
 }
