@@ -19,6 +19,7 @@ Junto con el desarrollo de la aplicación se entregará un enunciado con el nomb
 ## Otras funcionalidades (1 pto cada una)
 
 * Utilizar la Directions API para guiar al usuario a alguna ubicación relevante en la aplicación
+### Realizado
 * Utiliza la herramienta Git (y GitHub) durante todo el desarrollo de la aplicación. Utiliza el gestor de Issues para los problemas/fallos que vayan surgiendo
 * Añadir un menú de preferencias con al menos 3 opciones que modifiquen el comportamiento de la aplicación. Este menú estará siempre disponible en el ActionBar
 * Hacer uso de mapas en las pantalla donde se registre información. Para indicar información geográfica, por ejemplo
