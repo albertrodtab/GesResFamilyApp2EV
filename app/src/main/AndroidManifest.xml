@@ -41,7 +41,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <activity
-            android:name=".view.RegisterCentroActivity"
+            android:name=".view.RegisterCentroView"
             android:exported="false" />
         <activity
             android:name=".view.ViewCentroActivity"

@@ -80,7 +80,7 @@ public class CentrosListView extends AppCompatActivity implements CentrosListCon
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.registrar) {
             //Con Intent de digo donde estoy y a donde quiero ir
-            Intent intent = new Intent(this, RegisterCentroActivity.class);
+            Intent intent = new Intent(this, RegisterCentroView.class);
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.view_map) { //Para cuando pulsan en la boton del mapa en el menu options

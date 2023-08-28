@@ -48,6 +48,15 @@ public class Centro {
         this.latitude = latitude;
     }
 
+    public Centro(String nombre, String direccion, String numRegistro, String telefono, String mail, boolean tieneWifi) {
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.numRegistro = numRegistro;
+        this.telefono = telefono;
+        this.email = mail;
+        this.tieneWifi = tieneWifi;
+    }
+
     public long getId() {
         return id;
     }

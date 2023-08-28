@@ -7,7 +7,10 @@ import com.alberto.gesresfamilyapp.domain.Residente;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface GesResApiInterface {
 
@@ -16,6 +19,12 @@ public interface GesResApiInterface {
     //Centros
     @GET("centros")
     Call<List<Centro>> getCentros();
+
+    @GET("centro/{id}")
+    Call<Centro> getCentro( Centro centro);
+
+    @POST("centros")
+    Call<Centro> addCentro(@Body Centro centro);
 
 
     //Profesionales
