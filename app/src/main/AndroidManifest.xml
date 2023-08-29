@@ -44,9 +44,6 @@
             android:name=".view.RegisterCentroView"
             android:exported="false" />
         <activity
-            android:name=".view.ViewCentroActivity"
-            android:exported="false" />
-        <activity
             android:name=".view.CentrosListView"
             android:exported="false" />
         <activity

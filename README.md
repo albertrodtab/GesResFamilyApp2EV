@@ -1,4 +1,4 @@
-# GesResFamilyAPP 2EVAL
+º# GesResFamilyAPP 2EVAL
 App Android para una empresa de centros residenciales
 
 En esta Actividad de Aprendizaje consiste en el desarrollo de una aplicación Android.
