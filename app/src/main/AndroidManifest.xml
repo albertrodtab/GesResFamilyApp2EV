@@ -59,7 +59,7 @@
             android:name=".view.residente.RegisterResidenteActivity"
             android:exported="false" />
         <activity
-            android:name=".view.MapsActivity"
+            android:name=".view.MapsActivityView"
             android:exported="false" />
         <activity
             android:name=".view.MainActivityView"

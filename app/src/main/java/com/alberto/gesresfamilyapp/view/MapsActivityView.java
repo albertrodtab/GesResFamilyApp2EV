@@ -2,22 +2,20 @@ package com.alberto.gesresfamilyapp.view;
 
 
 
-import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
-
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
+import com.alberto.gesresfamilyapp.contract.centro.CentrosListMapsContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
+import com.alberto.gesresfamilyapp.presenter.centro.CentrosListMapsPresenter;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mapbox.geojson.Point;
@@ -31,17 +29,27 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManagerKt;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity {
+public class MapsActivityView extends AppCompatActivity implements CentrosListMapsContract.view {
 
     private MapView mapView;
+
+    private double gpsLatitude;
+    private double gpsLongitude;
+
+    private FusedLocationProviderClient fusedLocationClient;
     private PointAnnotationManager pointAnnotationManager;
+    public static List<Centro> centroList = new ArrayList<>();
+    private CentrosListMapsPresenter centrosListMapsPresenter;
     private FloatingActionButton btLotacion;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
@@ -64,10 +72,18 @@ public class MapsActivity extends AppCompatActivity {
         /**
          * buscamos el centro y lo traemos para recuperar su información
          */
-        final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
+        /*final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
-        List<Centro> centros = db.centroDao().getAll(); //Lista de la centros
-        addCenterToMap(centros); // se lo pasamos al metodo
+                db.centroDao().getAll(); //Lista de la centros*/
+        //addCenterToMap(centroList); // se lo pasamos al metodo
+        centrosListMapsPresenter = new CentrosListMapsPresenter(this);
+
+
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        centrosListMapsPresenter.loadAllCentros();
     }
 
     /**
@@ -90,16 +106,32 @@ public class MapsActivity extends AppCompatActivity {
         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                 .withPoint(point)
                 .withTextField(nombre) //asi aparece el nombre en el mapa
-                .withIconImage(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_centro_foreground));
+                .withIconImage(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_centro_mayores_foreground));
         pointAnnotationManager.create(pointAnnotationOptions);
     }
+
+    private void addMarker(double latitude, double longitude, String title, int id) {
+        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                .withPoint(Point.fromLngLat(longitude, latitude))
+                .withIconImage(BitmapFactory.decodeResource(getResources(), id))
+                .withTextField(title);
+        pointAnnotationManager.create(pointAnnotationOptions);
+    }
+
+    /*public void onStyleLoaded(@NonNull Style style) {
+        addMarker(inventory.getLatitude(), inventory.getLongitude(), String.valueOf(inventory.getId()), R.mipmap.ic_centro_mayores_foreground);
+        setCameraPosition(inventory.getLatitude(), inventory.getLongitude());
+        gps();
+
+
+    }*/
 
     /**
      * Fija la camara del mapa donde nosotros queramos, asi el mapa arranca desde ese punto
      *
-     * @param point
+     * @param
      */
-    private void setCameraPosition(Point point) {
+/*    private void setCameraPosition(Point point) {
         CameraOptions cameraPosition = new CameraOptions.Builder()
                 .center(point)
                 .pitch(0.0)
@@ -107,6 +139,41 @@ public class MapsActivity extends AppCompatActivity {
                 .bearing(-17.6)
                 .build();
         mapView.getMapboxMap().setCamera(cameraPosition);
+
+    }*/
+
+    private void setCameraPosition(double latitude, double longitude) {
+        CameraOptions cameraPosition = new CameraOptions.Builder()
+                .center(Point.fromLngLat(longitude, latitude))
+                .pitch(45.0)
+                .zoom(15.5)
+                .bearing(-17.6)
+                .build();
+        mapView.getMapboxMap().setCamera(cameraPosition);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void gps() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        gpsLongitude = location.getLongitude();
+                        gpsLatitude = location.getLatitude();
+                        Log.i("gps: ", "+++++++++++");
+                        Log.i("gps: ", String.valueOf(location.getLongitude()));
+                        Log.i("gps: ", String.valueOf(location.getLatitude()));
+                        Log.i("gps: ", String.valueOf(location));
+
+                        setCameraPosition(gpsLatitude, gpsLongitude);
+
+
+
+                        addMarker(gpsLatitude, gpsLongitude, "Yo", R.mipmap.ic_residente_foreground);
+
+                    }
+                });
 
     }
 
@@ -118,10 +185,11 @@ public class MapsActivity extends AppCompatActivity {
     private void addCenterToMap(List<Centro> centros) {
         for (Centro centro : centros) {
             Point point = Point.fromLngLat(centro.getLongitude(), centro.getLatitude());
-            addMarker(point, centro.getNombre()); //le pasamos el metodo que crea el marker y ponemos el point y nombre del centro       }
+            //addMarker(point, centro.getNombre()); //le pasamos el metodo que crea el marker y ponemos el point y nombre del centro       }
+            addMarker(centro.getLatitude(), centro.getLongitude(), centro.getNombre(), R.mipmap.ic_residente_foreground);
 
             Centro lastCentro = centros.get(centros.size() - 1); // recogemos el ultimo centro
-            setCameraPosition(Point.fromLngLat(lastCentro.getLongitude(), lastCentro.getLatitude())); //Fijamos la camara del mapa en el ultimo centro
+            setCameraPosition(lastCentro.getLatitude(), lastCentro.getLongitude()); //Fijamos la camara del mapa en el ultimo centro
         }
 
         /**
@@ -143,6 +211,17 @@ public class MapsActivity extends AppCompatActivity {
 //    }
 
 
+
+    }
+
+    @Override
+    public void showCentros(List<Centro> centros) {
+        centroList.addAll(centros);
+        addCenterToMap(centroList);
+    }
+
+    @Override
+    public void showMessage(String message) {
 
     }
 }

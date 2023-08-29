@@ -16,7 +16,7 @@ import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
 import com.alberto.gesresfamilyapp.contract.centro.CentrosListContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.alberto.gesresfamilyapp.presenter.centro.CentrosListPresenter;
-import com.alberto.gesresfamilyapp.view.MapsActivity;
+import com.alberto.gesresfamilyapp.view.MapsActivityView;
 import com.google.android.material.appbar.MaterialToolbar;
 
 
@@ -85,7 +85,7 @@ public class CentrosListView extends AppCompatActivity implements CentrosListCon
             startActivity(intent);
             return true;
         } else if (item.getItemId() == R.id.view_map) { //Para cuando pulsan en la boton del mapa en el menu options
-            Intent intent = new Intent(this, MapsActivity.class); //donde nos manda al pinchar sobre el boton mapas en el menu options
+            Intent intent = new Intent(this, MapsActivityView.class); //donde nos manda al pinchar sobre el boton mapas en el menu options
             startActivity(intent);
             return true;
         }
