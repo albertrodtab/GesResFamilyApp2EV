@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp.view;
+package com.alberto.gesresfamilyapp.view.profesional;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -19,7 +19,7 @@ import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Residente;
+import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,13 +33,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class RegisterResidenteActivity extends AppCompatActivity {
+public class RegisterProfesionalActivity extends AppCompatActivity {
 
     private static final int REQUEST_SELECT_PHOTO = 1;
 
-    private boolean isModifyResidente;
+    private boolean isModifyProfesional;
     private AppDatabase db;
-
     private TextInputLayout tilNombre;
     private TextInputEditText etNombre;
     private TextInputLayout tilApellidos;
@@ -47,11 +46,11 @@ public class RegisterResidenteActivity extends AppCompatActivity {
     private TextInputLayout tilDni;
     private TextInputEditText etDni;
     //private EditText etFechaNac;
-    private TextInputLayout tilSexo;
-    private TextInputEditText etSexo;
+    private TextInputLayout tilCategoria;
+    private TextInputEditText etCategoria;
     private ImageView imageView;
 
-    private Residente residente;
+    private Profesional profesional;
 
     private ActivityResultLauncher<Intent> photoPickerLauncher;
 
@@ -61,7 +60,7 @@ public class RegisterResidenteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_register_residente);
+        setContentView(R.layout.activity_register_profesional);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -86,7 +85,7 @@ public class RegisterResidenteActivity extends AppCompatActivity {
                             String photoUriString = selectedPhotoUri.toString();
 
                             // Guardar la URI de la foto en el centro
-                            residente.setPhotoUri(photoUriString);
+                            profesional.setPhotoUri(photoUriString);
 
                             // Cargar y mostrar la foto en el ImageView
                             loadImage(photoUriString);
@@ -96,7 +95,7 @@ public class RegisterResidenteActivity extends AppCompatActivity {
                             // Foto capturada con la cámara
                             Uri photoUri = Uri.fromFile(createTempImageFile());
                             String photoUriString = photoUri.toString();
-                            residente.setPhotoUri(photoUriString);
+                            profesional.setPhotoUri(photoUriString);
                             loadImage(photoUriString);
                             Snackbar.make(imageView, R.string.fotoCapturada, BaseTransientBottomBar.LENGTH_LONG).show();
                         }
@@ -107,43 +106,43 @@ public class RegisterResidenteActivity extends AppCompatActivity {
         tilNombre = findViewById(R.id.tilNombre);
         tilApellidos = findViewById(R.id.tilApellidos);
         tilDni = findViewById(R.id.tilDni);
-        tilSexo = findViewById(R.id.tilSexo);
+        tilCategoria = findViewById(R.id.tilCategoria);
         etNombre = findViewById(R.id.etNombre);
         etApellidos = findViewById(R.id.etApellidos);
         etDni = findViewById(R.id.etDni);
         //etFechaNac = findViewById(R.id.etFechaNac);
-        etSexo = findViewById(R.id.etSexo);
-        imageView = findViewById(R.id.ivResidenteReg);
+        etCategoria = findViewById(R.id.etCategoria);
+        imageView = findViewById(R.id.ivProfesionalReg);
 
         db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
 
         Intent intent = getIntent();
-        long residenteId = intent.getLongExtra("id", -1);
-        isModifyResidente = intent.getBooleanExtra("modify_residente", false);
+        long profesionalId = intent.getLongExtra("id", -1);
+        isModifyProfesional = intent.getBooleanExtra("modify_profesional", false);
 
-        if (isModifyResidente) {
-            if (residenteId != -1) {
-                residente = db.residenteDao().getById(residenteId);
-                if (residente != null) {
-                    fillData(residente);
-                    loadImage(residente.getPhotoUri());
+        if (isModifyProfesional) {
+            if (profesionalId != -1) {
+                profesional = db.profesionalDao().getById(profesionalId);
+                if (profesional != null) {
+                    fillData(profesional);
+                    loadImage(profesional.getPhotoUri());
                 }
             }
         } else {
-            residente = new Residente();
+            profesional = new Profesional();
 
         }
     }
 
 
-    private void fillData(Residente residente) {
-        tilNombre.getEditText().setText(residente.getNombre());
-        tilApellidos.getEditText().setText(residente.getApellidos());
-        tilSexo.getEditText().setText(residente.getSexo());
-        tilDni.getEditText().setText(residente.getDni());
-        //if (residente.getFechaNacimiento() != null) {
-        //    etFechaNac.setText(residente.getFechaNacimiento().toString());
+    private void fillData(Profesional profesional) {
+        tilNombre.getEditText().setText(profesional.getNombre());
+        tilApellidos.getEditText().setText(profesional.getApellidos());
+        tilCategoria.getEditText().setText(profesional.getCategoria());
+        tilDni.getEditText().setText(profesional.getDni());
+        //if (profesional.getFechaNacimiento() != null) {
+        //    etFechaNac.setText(profesional.getFechaNacimiento().toString());
         //} else {
         //    etFechaNac.setText(""); // or provide a default value or handle the case when fechaNacimiento is null
         //}
@@ -210,7 +209,7 @@ public class RegisterResidenteActivity extends AppCompatActivity {
         return null;
     }
 
-    public void registerResidente(View view) {
+    public void registerProfesional(View view) {
         String nombre = tilNombre.getEditText().getText().toString();
         String apellidos = tilApellidos.getEditText().getText().toString();
         String dni = tilDni.getEditText().getText().toString();
@@ -224,31 +223,32 @@ public class RegisterResidenteActivity extends AppCompatActivity {
         //} catch (ParseException e) {
         //    e.printStackTrace();
         //}
-        String sexo = tilSexo.getEditText().getText().toString();
+        String categoria = tilCategoria.getEditText().getText().toString();
 
 
 
-        if (isModifyResidente) {
-            residente.setNombre(nombre);
-            residente.setApellidos(apellidos);
-            residente.setDni(dni);
-            //residente.setFechaNacimiento(fechaNac);
-            residente.setSexo(sexo);
-            db.residenteDao().update(residente);
-            Toast.makeText(this, R.string.residenteModificado, Toast.LENGTH_LONG).show();
+        if (isModifyProfesional) {
+            profesional.setNombre(nombre);
+            profesional.setApellidos(apellidos);
+            profesional.setDni(dni);
+            //profesional.setFechaNacimiento(fechaNac);
+            profesional.setCategoria(categoria);
+            db.profesionalDao().update(profesional);
+            Toast.makeText(this, R.string.profesionalModificado, Toast.LENGTH_LONG).show();
         } else {
-            residente.setNombre(nombre);
-            residente.setApellidos(apellidos);
-            residente.setDni(dni);
-            //residente.setFechaNacimiento(fechaNac);
-            residente.setSexo(sexo);
-            db.residenteDao().insert(residente);
-            Toast.makeText(this, R.string.residenteRegistado, Toast.LENGTH_LONG).show();
+            profesional.setNombre(nombre);
+            profesional.setApellidos(apellidos);
+            profesional.setDni(dni);
+            //profesional.setFechaNacimiento(fechaNac);
+            profesional.setCategoria(categoria);
+
+            db.profesionalDao().insert(profesional);
+            Toast.makeText(this, R.string.profesionalRegistado, Toast.LENGTH_LONG).show();
         }
 
         etNombre.setText("");
         etApellidos.setText("");
-        etSexo.setText("");
+        etCategoria.setText("");
         etDni.setText("");
         //etFechaNac.setText("");
         etNombre.requestFocus();

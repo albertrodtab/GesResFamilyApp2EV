@@ -41,28 +41,25 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <activity
-            android:name=".view.RegisterCentroView"
+            android:name=".view.centro.RegisterCentroView"
             android:exported="false" />
         <activity
-            android:name=".view.CentrosListView"
+            android:name=".view.centro.CentrosListView"
             android:exported="false" />
         <activity
-            android:name=".view.ProfesionalesListView"
+            android:name=".view.profesional.ProfesionalesListView"
             android:exported="false" />
         <activity
-            android:name=".view.RegisterProfesionalActivity"
+            android:name=".view.profesional.RegisterProfesionalActivity"
             android:exported="false" />
         <activity
-            android:name=".view.ResidentesListView"
+            android:name=".view.residente.ResidentesListView"
             android:exported="false" />
         <activity
-            android:name=".view.ViewResidenteActivity"
+            android:name=".view.residente.RegisterResidenteActivity"
             android:exported="false" />
         <activity
-            android:name=".view.RegisterResidenteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.MapsActivity"
+            android:name=".view.MapsActivityView"
             android:exported="false" />
         <activity
             android:name=".view.MainActivityView"

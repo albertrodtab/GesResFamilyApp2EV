@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp.view;
+package com.alberto.gesresfamilyapp.view.centro;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -27,11 +27,12 @@ import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.contract.RegisterCentroContract;
+import com.alberto.gesresfamilyapp.contract.centro.ModifyCentroContract;
+import com.alberto.gesresfamilyapp.contract.centro.RegisterCentroContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
-import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
-import com.alberto.gesresfamilyapp.presenter.RegisterCentroPresenter;
+import com.alberto.gesresfamilyapp.presenter.centro.ModifyCentroPresenter;
+import com.alberto.gesresfamilyapp.presenter.centro.RegisterCentroPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -54,13 +55,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class RegisterCentroView extends AppCompatActivity implements RegisterCentroContract.view {
+public class RegisterCentroView extends AppCompatActivity implements RegisterCentroContract.view,
+        ModifyCentroContract.view {
 
     private static final int REQUEST_SELECT_PHOTO = 1;
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
 
-    private boolean isModifyCentro;
+    Centro isModifyCentro;
     private AppDatabase db;
 
     private TextInputLayout tilNombre;
@@ -86,7 +88,9 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
     private Point point; //Guardamos el point para gestionar la latitud y longuitud
     private PointAnnotationManager pointAnnotationManager; //Para anotar el point así es común para todos
 
-    private RegisterCentroPresenter presenter;
+    private RegisterCentroPresenter registerCentroPresenter;
+
+    private ModifyCentroPresenter modifyCentroPresenter;
 
 
 
@@ -173,21 +177,20 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
 
         Intent intent = getIntent();
         long centroId = intent.getLongExtra("id", -1);
-        isModifyCentro = intent.getBooleanExtra("modify_centro", false);
+        isModifyCentro = (Centro) intent.getSerializableExtra("modify_centro");
 
-        if (isModifyCentro) {
-            if (centroId != -1) {
-                centro = db.centroDao().getById(centroId);
-                if (centro != null) {
-                    fillData(centro);
-                    loadImage(centro.getPhotoUri());
-                }
-            }
+        if (isModifyCentro != null) {
+            centro = isModifyCentro;
+            fillData(centro);
+            loadImage(centro.getPhotoUri());
+
+
         } else {
             centro = new Centro();
 
         }
-        presenter = new RegisterCentroPresenter(this);
+        registerCentroPresenter = new RegisterCentroPresenter(this);
+        modifyCentroPresenter = new ModifyCentroPresenter(this);
     }
 
     private void fillData(Centro centro) {
@@ -279,7 +282,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         File imageFile = new File(storageDir, System.currentTimeMillis() + ".jpg");
         Log.i("RegisterCentro", "register - filePath: " + imageFile);
 
-        if (isModifyCentro) {
+        if (isModifyCentro != null) {
             centro.setNombre(nombre);
             centro.setDireccion(direccion);
             centro.setNumRegistro(numRegistro);
@@ -288,6 +291,8 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
             centro.setTieneWifi(tieneWifi);
             centro.setLatitude(point.latitude());
             centro.setLongitude(point.longitude());
+
+
 
             /*if(imageOK){
                 //Guardamos el archivo en el almacenamiento
@@ -309,7 +314,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
 
             } else{
 
-                presenter.registerCentro(centro);
+                modifyCentroPresenter.modifyCentro(centro);
 
                 Toast.makeText(this, R.string.centroModificado, Toast.LENGTH_LONG).show();
                 resetForm();
@@ -359,7 +364,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
                 centro.setLongitude(point.longitude());
 
                 //Centro centro = new Centro();
-                presenter.registerCentro(centro);
+                registerCentroPresenter.registerCentro(centro);
                 resetForm();
                 }
 

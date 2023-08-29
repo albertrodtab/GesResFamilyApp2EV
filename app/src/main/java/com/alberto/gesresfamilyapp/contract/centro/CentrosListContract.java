@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp.contract;
+package com.alberto.gesresfamilyapp.contract.centro;
 
 import com.alberto.gesresfamilyapp.domain.Centro;
 

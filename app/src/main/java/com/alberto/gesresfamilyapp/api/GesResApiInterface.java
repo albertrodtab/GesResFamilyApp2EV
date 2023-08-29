@@ -11,6 +11,7 @@ import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 public interface GesResApiInterface {
@@ -29,6 +30,8 @@ public interface GesResApiInterface {
 
     @DELETE ("centro/{id}")
     Call<Void> removeCentro(@Path("id") long id);
+    @PUT("centro/{id}")
+    Call<Centro> modifyCentro(@Path("id") long id, @Body Centro centro);
 
 
     //Profesionales

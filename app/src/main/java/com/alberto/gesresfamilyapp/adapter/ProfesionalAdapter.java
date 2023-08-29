@@ -16,7 +16,7 @@ import androidx.room.Room;
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.view.RegisterProfesionalActivity;
+import com.alberto.gesresfamilyapp.view.profesional.RegisterProfesionalActivity;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 

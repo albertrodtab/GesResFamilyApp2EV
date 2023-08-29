@@ -1,16 +1,12 @@
-package com.alberto.gesresfamilyapp.model;
-
-import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
+package com.alberto.gesresfamilyapp.model.centro;
 
 import android.content.Context;
 import android.util.Log;
 
-import androidx.room.Room;
-
 import com.alberto.gesresfamilyapp.api.GesResApi;
 import com.alberto.gesresfamilyapp.api.GesResApiInterface;
-import com.alberto.gesresfamilyapp.contract.CentrosListContract;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
+import com.alberto.gesresfamilyapp.contract.centro.CentrosListContract;
+import com.alberto.gesresfamilyapp.contract.centro.CentrosListMapsContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
 
 import java.util.List;
@@ -19,7 +15,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CentrosListModel implements CentrosListContract.Model {
+public class CentrosListMapsModel implements CentrosListMapsContract.Model {
 
     private Context context;
 

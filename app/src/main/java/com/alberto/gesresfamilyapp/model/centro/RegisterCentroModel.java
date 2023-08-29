@@ -1,15 +1,12 @@
-package com.alberto.gesresfamilyapp.model;
+package com.alberto.gesresfamilyapp.model.centro;
 
-import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 
 import com.alberto.gesresfamilyapp.api.GesResApi;
 import com.alberto.gesresfamilyapp.api.GesResApiInterface;
-import com.alberto.gesresfamilyapp.contract.RegisterCentroContract;
+import com.alberto.gesresfamilyapp.contract.centro.RegisterCentroContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

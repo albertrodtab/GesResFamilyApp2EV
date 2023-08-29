@@ -1,18 +1,11 @@
-package com.alberto.gesresfamilyapp.model;
-
-import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
+package com.alberto.gesresfamilyapp.model.residente;
 
 import android.content.Context;
 import android.util.Log;
 
-import androidx.room.Room;
-
 import com.alberto.gesresfamilyapp.api.GesResApi;
 import com.alberto.gesresfamilyapp.api.GesResApiInterface;
-import com.alberto.gesresfamilyapp.contract.ProfesionalesListContract;
-import com.alberto.gesresfamilyapp.contract.ResidentesListContract;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Profesional;
+import com.alberto.gesresfamilyapp.contract.residente.ResidentesListContract;
 import com.alberto.gesresfamilyapp.domain.Residente;
 
 import java.util.List;
