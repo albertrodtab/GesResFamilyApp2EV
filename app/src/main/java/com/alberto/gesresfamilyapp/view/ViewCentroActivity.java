@@ -148,7 +148,7 @@ public class ViewCentroActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_CALL);
         intent.setData(Uri.parse("tel:" + phoneNumber));
 
-            startActivity(intent);
+        startActivity(intent);
 
     }
     public void cancel(View view) {
