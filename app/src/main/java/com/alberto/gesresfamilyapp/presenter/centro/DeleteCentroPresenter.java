@@ -1,11 +1,8 @@
-package com.alberto.gesresfamilyapp.presenter;
+package com.alberto.gesresfamilyapp.presenter.centro;
 
 import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
-import com.alberto.gesresfamilyapp.contract.DeleteCentroContract;
-import com.alberto.gesresfamilyapp.domain.Centro;
-import com.alberto.gesresfamilyapp.model.DeleteCentroModel;
-
-import java.util.List;
+import com.alberto.gesresfamilyapp.contract.centro.DeleteCentroContract;
+import com.alberto.gesresfamilyapp.model.centro.DeleteCentroModel;
 
 public class DeleteCentroPresenter implements DeleteCentroContract.Presenter,
     DeleteCentroContract.Model.OnDeleteCentroListener {
@@ -20,9 +17,7 @@ public class DeleteCentroPresenter implements DeleteCentroContract.Presenter,
     @Override
     public void deleteCentro(long id) {
         model.deleteCentro(id,this);
-
     }
-
 
     @Override
     public void onDeleteCentroSuccess(String message) {

@@ -1,9 +1,9 @@
-package com.alberto.gesresfamilyapp.presenter;
+package com.alberto.gesresfamilyapp.presenter.centro;
 
-import com.alberto.gesresfamilyapp.contract.CentrosListContract;
+import com.alberto.gesresfamilyapp.contract.centro.CentrosListContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
-import com.alberto.gesresfamilyapp.model.CentrosListModel;
-import com.alberto.gesresfamilyapp.view.CentrosListView;
+import com.alberto.gesresfamilyapp.model.centro.CentrosListModel;
+import com.alberto.gesresfamilyapp.view.centro.CentrosListView;
 
 import java.util.List;
 

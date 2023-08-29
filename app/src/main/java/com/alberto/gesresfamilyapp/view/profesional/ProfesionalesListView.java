@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp.view;
+package com.alberto.gesresfamilyapp.view.profesional;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
@@ -16,11 +16,10 @@ import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.adapter.ProfesionalAdapter;
-import com.alberto.gesresfamilyapp.contract.ProfesionalesListContract;
+import com.alberto.gesresfamilyapp.contract.profesional.ProfesionalesListContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
-import com.alberto.gesresfamilyapp.presenter.ProfesionalesListPresenter;
+import com.alberto.gesresfamilyapp.presenter.profesional.ProfesionalesListPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;

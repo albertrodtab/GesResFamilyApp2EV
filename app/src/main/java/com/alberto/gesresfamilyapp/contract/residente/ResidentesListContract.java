@@ -1,6 +1,5 @@
-package com.alberto.gesresfamilyapp.contract;
+package com.alberto.gesresfamilyapp.contract.residente;
 
-import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.alberto.gesresfamilyapp.domain.Residente;
 
 import java.util.List;

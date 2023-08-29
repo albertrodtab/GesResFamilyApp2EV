@@ -1,6 +1,9 @@
-package com.alberto.gesresfamilyapp.view;
+package com.alberto.gesresfamilyapp.view.centro;
 
-import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,37 +11,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
-
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.adapter.ResidenteAdapter;
-import com.alberto.gesresfamilyapp.contract.ResidentesListContract;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Residente;
-import com.alberto.gesresfamilyapp.presenter.CentrosListPresenter;
-import com.alberto.gesresfamilyapp.presenter.ResidentesListPresenter;
+import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
+import com.alberto.gesresfamilyapp.contract.centro.CentrosListContract;
+import com.alberto.gesresfamilyapp.domain.Centro;
+import com.alberto.gesresfamilyapp.presenter.centro.CentrosListPresenter;
+import com.alberto.gesresfamilyapp.view.MapsActivity;
 import com.google.android.material.appbar.MaterialToolbar;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResidentesListView extends AppCompatActivity implements ResidentesListContract.view {
+public class CentrosListView extends AppCompatActivity implements CentrosListContract.view {
 
-    public static List<Residente> residentesList = new ArrayList<>();
-    private ResidenteAdapter adapter;
+    public static List<Centro> centroList = new ArrayList<>();
+    private CentroAdapter adapter;
 
-    private ResidentesListPresenter presenter;
+    private CentrosListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_residentes);
+        setContentView(R.layout.activity_centros);
 
-        presenter = new ResidentesListPresenter(this);
+        presenter = new CentrosListPresenter(this);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -55,9 +52,8 @@ public class ResidentesListView extends AppCompatActivity implements ResidentesL
     }
 
     private void initializeRecyclerView(){
-        residentesList = new ArrayList<>();
-
-        RecyclerView recyclerView = findViewById(R.id.residentes_list);
+        centroList = new ArrayList<>();
+        RecyclerView recyclerView = findViewById(R.id.centros_list);
         //esto le dice que tenga un tamaño fijo y que ocupe el máximo espacio asignado
         recyclerView.setHasFixedSize(true);
         //Esto le dice que lo va a gestionar un linear layout manager
@@ -65,19 +61,19 @@ public class ResidentesListView extends AppCompatActivity implements ResidentesL
         //así se ciñe al Layout manager
         recyclerView.setLayoutManager(layoutManager);
         //hago mi adapter propio no utilizo el arrayadapter de android
-        adapter = new ResidenteAdapter(this, residentesList);
+        adapter = new CentroAdapter(this, centroList);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.loadAllResidentes();
+        presenter.loadAllCentros();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_options_add, menu);
+        getMenuInflater().inflate(R.menu.menu_options, menu);
         return true;
     }
 
@@ -85,11 +81,15 @@ public class ResidentesListView extends AppCompatActivity implements ResidentesL
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.registrar) {
             //Con Intent de digo donde estoy y a donde quiero ir
-            Intent intent = new Intent(this, RegisterResidenteActivity.class);
+            Intent intent = new Intent(this, RegisterCentroView.class);
+            startActivity(intent);
+            return true;
+        } else if (item.getItemId() == R.id.view_map) { //Para cuando pulsan en la boton del mapa en el menu options
+            Intent intent = new Intent(this, MapsActivity.class); //donde nos manda al pinchar sobre el boton mapas en el menu options
             startActivity(intent);
             return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item); // Llamar al método de la superclase
     }
 
     public void cancel(View view) {
@@ -97,11 +97,12 @@ public class ResidentesListView extends AppCompatActivity implements ResidentesL
     }
 
     @Override
-    public void showResidentes(List<Residente> residentes) {
-        residentesList.clear();
-        residentesList.addAll(residentes);
+    public void showCentros(List<Centro> centros) {
+        centroList.clear();
+        centroList.addAll(centros);
         // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
         adapter.notifyDataSetChanged();
+
     }
 
     @Override

@@ -1,12 +1,9 @@
-package com.alberto.gesresfamilyapp.presenter;
+package com.alberto.gesresfamilyapp.presenter.profesional;
 
-import com.alberto.gesresfamilyapp.contract.ProfesionalesListContract;
-import com.alberto.gesresfamilyapp.domain.Centro;
+import com.alberto.gesresfamilyapp.contract.profesional.ProfesionalesListContract;
 import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.model.CentrosListModel;
-import com.alberto.gesresfamilyapp.model.ProfesionalesListModel;
-import com.alberto.gesresfamilyapp.view.CentrosListView;
-import com.alberto.gesresfamilyapp.view.ProfesionalesListView;
+import com.alberto.gesresfamilyapp.model.profesional.ProfesionalesListModel;
+import com.alberto.gesresfamilyapp.view.profesional.ProfesionalesListView;
 
 import java.util.List;
 

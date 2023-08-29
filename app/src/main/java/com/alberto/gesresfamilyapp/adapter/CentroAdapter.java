@@ -16,13 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.contract.DeleteCentroContract;
-import com.alberto.gesresfamilyapp.presenter.DeleteCentroPresenter;
-import com.alberto.gesresfamilyapp.view.RegisterCentroView;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
+import com.alberto.gesresfamilyapp.contract.centro.DeleteCentroContract;
+import com.alberto.gesresfamilyapp.presenter.centro.DeleteCentroPresenter;
+import com.alberto.gesresfamilyapp.view.centro.RegisterCentroView;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
@@ -217,14 +215,14 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
                         Centro centro = centroList.get(position);
 
                         Intent intent = new Intent(context, RegisterCentroView.class);
-                        intent.putExtra("modify_centro", true);
-                        intent.putExtra("id", centro.getId());
+                        intent.putExtra("modify_centro", centro);
+                        /*intent.putExtra("id", centro.getId());
                         intent.putExtra("nombre", centro.getNombre());
                         intent.putExtra("direccion", centro.getDireccion());
                         intent.putExtra("num_registro", centro.getNumRegistro());
                         intent.putExtra("telefono", centro.getTelefono());
                         intent.putExtra("email", centro.getEmail());
-                        intent.putExtra("tieneWifi", centro.getTieneWifi());
+                        intent.putExtra("tieneWifi", centro.getTieneWifi());*/
 
                         context.startActivity(intent);
                     })

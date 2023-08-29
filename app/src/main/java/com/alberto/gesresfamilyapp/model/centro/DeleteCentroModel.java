@@ -1,10 +1,10 @@
-package com.alberto.gesresfamilyapp.model;
+package com.alberto.gesresfamilyapp.model.centro;
 
 import android.util.Log;
 
 import com.alberto.gesresfamilyapp.api.GesResApi;
 import com.alberto.gesresfamilyapp.api.GesResApiInterface;
-import com.alberto.gesresfamilyapp.contract.DeleteCentroContract;
+import com.alberto.gesresfamilyapp.contract.centro.DeleteCentroContract;
 
 
 import retrofit2.Call;

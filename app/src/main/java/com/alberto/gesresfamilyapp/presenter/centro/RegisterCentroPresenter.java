@@ -1,11 +1,11 @@
-package com.alberto.gesresfamilyapp.presenter;
+package com.alberto.gesresfamilyapp.presenter.centro;
 
 
-import com.alberto.gesresfamilyapp.contract.RegisterCentroContract;
+import com.alberto.gesresfamilyapp.contract.centro.RegisterCentroContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
 
-import com.alberto.gesresfamilyapp.model.RegisterCentroModel;
-import com.alberto.gesresfamilyapp.view.RegisterCentroView;
+import com.alberto.gesresfamilyapp.model.centro.RegisterCentroModel;
+import com.alberto.gesresfamilyapp.view.centro.RegisterCentroView;
 
 public class RegisterCentroPresenter implements RegisterCentroContract.Presenter,
         RegisterCentroContract.Model.OnRegisterCentroListener{

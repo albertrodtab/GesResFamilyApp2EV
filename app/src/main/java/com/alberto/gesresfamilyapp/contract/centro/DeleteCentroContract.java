@@ -1,4 +1,4 @@
-package com.alberto.gesresfamilyapp.contract;
+package com.alberto.gesresfamilyapp.contract.centro;
 
 public interface DeleteCentroContract {
 

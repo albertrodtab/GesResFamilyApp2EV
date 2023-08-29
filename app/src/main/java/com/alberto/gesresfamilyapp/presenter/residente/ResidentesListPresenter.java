@@ -1,9 +1,9 @@
-package com.alberto.gesresfamilyapp.presenter;
+package com.alberto.gesresfamilyapp.presenter.residente;
 
-import com.alberto.gesresfamilyapp.contract.ResidentesListContract;
+import com.alberto.gesresfamilyapp.contract.residente.ResidentesListContract;
 import com.alberto.gesresfamilyapp.domain.Residente;
-import com.alberto.gesresfamilyapp.model.ResidentesListModel;
-import com.alberto.gesresfamilyapp.view.ResidentesListView;
+import com.alberto.gesresfamilyapp.model.residente.ResidentesListModel;
+import com.alberto.gesresfamilyapp.view.residente.ResidentesListView;
 
 import java.util.List;
 
