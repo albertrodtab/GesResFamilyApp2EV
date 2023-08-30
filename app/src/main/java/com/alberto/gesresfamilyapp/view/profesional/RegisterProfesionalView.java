@@ -18,8 +18,12 @@ import androidx.core.content.FileProvider;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
+import com.alberto.gesresfamilyapp.contract.centro.RegisterCentroContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
+import com.alberto.gesresfamilyapp.presenter.centro.ModifyCentroPresenter;
+import com.alberto.gesresfamilyapp.presenter.profesional.ModifyProfesionalPresenter;
+import com.alberto.gesresfamilyapp.presenter.profesional.RegisterProfesionalPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -33,11 +37,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class RegisterProfesionalActivity extends AppCompatActivity {
+public class RegisterProfesionalView extends AppCompatActivity implements RegisterCentroContract.view {
 
     private static final int REQUEST_SELECT_PHOTO = 1;
 
-    private boolean isModifyProfesional;
+    Profesional isModifyProfesional;
     private AppDatabase db;
     private TextInputLayout tilNombre;
     private TextInputEditText etNombre;
@@ -53,6 +57,10 @@ public class RegisterProfesionalActivity extends AppCompatActivity {
     private Profesional profesional;
 
     private ActivityResultLauncher<Intent> photoPickerLauncher;
+
+    private RegisterProfesionalPresenter registerProfesionalPresenter;
+
+    private ModifyProfesionalPresenter modifyProfesionalPresenter;
 
 
 
@@ -119,20 +127,19 @@ public class RegisterProfesionalActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         long profesionalId = intent.getLongExtra("id", -1);
-        isModifyProfesional = intent.getBooleanExtra("modify_profesional", false);
+        isModifyProfesional = (Profesional) intent.getSerializableExtra("modify_profesional");
 
-        if (isModifyProfesional) {
-            if (profesionalId != -1) {
-                profesional = db.profesionalDao().getById(profesionalId);
-                if (profesional != null) {
-                    fillData(profesional);
-                    loadImage(profesional.getPhotoUri());
-                }
-            }
+        if (isModifyProfesional != null) {
+            profesional = isModifyProfesional;
+            fillData(profesional);
+            loadImage(profesional.getPhotoUri());
+
         } else {
             profesional = new Profesional();
 
         }
+        registerProfesionalPresenter = new RegisterProfesionalPresenter(this);
+        modifyProfesionalPresenter = new ModifyProfesionalPresenter(this);
     }
 
 
@@ -170,7 +177,7 @@ public class RegisterProfesionalActivity extends AppCompatActivity {
                     .into(imageView);
         } else {
             Picasso.get()
-                    .load(R.drawable.icons8_city_buildings_100)
+                    .load(R.drawable.profesional)
                     .into(imageView);
         }
     }
@@ -226,15 +233,25 @@ public class RegisterProfesionalActivity extends AppCompatActivity {
         String categoria = tilCategoria.getEditText().getText().toString();
 
 
-
-        if (isModifyProfesional) {
+        if (isModifyProfesional != null) {
             profesional.setNombre(nombre);
             profesional.setApellidos(apellidos);
             profesional.setDni(dni);
             //profesional.setFechaNacimiento(fechaNac);
             profesional.setCategoria(categoria);
-            db.profesionalDao().update(profesional);
-            Toast.makeText(this, R.string.profesionalModificado, Toast.LENGTH_LONG).show();
+
+            if (nombre == null || nombre.isEmpty()) {
+                Toast.makeText(this, R.string.profesionalNombreVacio, Toast.LENGTH_LONG).show();
+                etNombre.setText(nombre);
+                etApellidos.setText(apellidos);
+                etDni.setText(dni);
+                etCategoria.setText(categoria);
+            } else {
+                modifyProfesionalPresenter.modifyProfesional(profesional);
+                Toast.makeText(this, R.string.profesionalModificado, Toast.LENGTH_LONG).show();
+                resetForm();
+            }
+
         } else {
             profesional.setNombre(nombre);
             profesional.setApellidos(apellidos);
@@ -242,63 +259,50 @@ public class RegisterProfesionalActivity extends AppCompatActivity {
             //profesional.setFechaNacimiento(fechaNac);
             profesional.setCategoria(categoria);
 
-            db.profesionalDao().insert(profesional);
-            Toast.makeText(this, R.string.profesionalRegistado, Toast.LENGTH_LONG).show();
-        }
-
-        etNombre.setText("");
-        etApellidos.setText("");
-        etCategoria.setText("");
-        etDni.setText("");
-        //etFechaNac.setText("");
-        etNombre.requestFocus();
-    }
-
-
-//Con atctivityResultLauncher ya no hace falta.
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SELECT_PHOTO && resultCode == RESULT_OK) {
-            if (data != null) {
-                // Foto seleccionada desde la galería
-                Uri selectedPhotoUri = data.getData();
-                String photoUriString = selectedPhotoUri.toString();
-                centro.setPhotoUri(photoUriString);
-                loadImage(photoUriString);
-                Snackbar.make(imageView, "Foto seleccionada", BaseTransientBottomBar.LENGTH_LONG).show();
+            if (nombre == null || nombre.isEmpty()) {
+                Toast.makeText(this, R.string.profesionalNombreVacio, Toast.LENGTH_LONG).show();
+                etNombre.setText(nombre);
+                etApellidos.setText(apellidos);
+                etDni.setText(dni);
+                etCategoria.setText(categoria);
             } else {
-                // Foto capturada con la cámara
-                Uri photoUri = Uri.fromFile(createTempImageFile());
-                String photoUriString = photoUri.toString();
-                centro.setPhotoUri(photoUriString);
-                loadImage(photoUriString);
-                Snackbar.make(imageView, "Foto capturada", BaseTransientBottomBar.LENGTH_LONG).show();
+                profesional.setNombre(nombre);
+                profesional.setApellidos(apellidos);
+                profesional.setDni(dni);
+                //profesional.setFechaNacimiento(fechaNac);
+                profesional.setCategoria(categoria);
+
+                registerProfesionalPresenter.registerProfesional(profesional);
+                Toast.makeText(this, R.string.profesionalRegistado, Toast.LENGTH_LONG).show();
+                resetForm();
             }
         }
-    }*/
+    }
 
+    @Override
+    public void resetForm() {
+        etNombre.setText("");
+        etApellidos.setText("");
+        etDni.setText("");
+        etCategoria.setText("");
+        etNombre.requestFocus();
 
-   /* @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_SELECT_PHOTO && resultCode == RESULT_OK && data != null) {
-            Uri selectedPhotoUri = data.getData();
-            String photoUriString = selectedPhotoUri.toString();
-
-            // Guardar la URI de la foto en el centro
-            centro.setPhotoUri(photoUriString);
-
-            // Cargar y mostrar la foto en el ImageView
-            loadImage(photoUriString);
-
-            Snackbar.make(imageView, "Foto seleccionada", BaseTransientBottomBar.LENGTH_LONG).show();
-        }
-    }*/
-
+    }
 
     public void cancel(View view) {
         onBackPressed();
+    }
+
+    public void showMessage(String message) {
+        Snackbar.make((findViewById(R.id.etNombre)), message,
+                BaseTransientBottomBar.LENGTH_LONG).show();
+    }
+
+    public void showError(String errorMessage) {
+        Snackbar.make((findViewById(R.id.etNombre)), errorMessage,
+                BaseTransientBottomBar.LENGTH_LONG).show();
+
+
     }
 }
 

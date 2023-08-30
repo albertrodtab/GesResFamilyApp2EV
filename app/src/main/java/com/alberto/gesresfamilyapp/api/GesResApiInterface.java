@@ -30,6 +30,7 @@ public interface GesResApiInterface {
 
     @DELETE ("centro/{id}")
     Call<Void> removeCentro(@Path("id") long id);
+
     @PUT("centro/{id}")
     Call<Centro> modifyCentro(@Path("id") long id, @Body Centro centro);
 
@@ -37,6 +38,17 @@ public interface GesResApiInterface {
     //Profesionales
     @GET("profesionales")
     Call<List<Profesional>> getProfesionales();
+
+    @POST("profesionales")
+    Call<Profesional> addProfesional(@Body Profesional profesional);
+
+    @DELETE ("profesional/{id}")
+    Call<Void> removeProfesional(@Path("id") long id);
+
+    @PUT("profesional/{id}")
+    Call<Profesional> modifyProfesional(@Path("id") long id, @Body Profesional profesional);
+
+
 
 
     //Residentes
