@@ -50,7 +50,7 @@
             android:name=".view.profesional.ProfesionalesListView"
             android:exported="false" />
         <activity
-            android:name=".view.profesional.RegisterProfesionalActivity"
+            android:name=".view.profesional.RegisterProfesionalView"
             android:exported="false" />
         <activity
             android:name=".view.residente.ResidentesListView"

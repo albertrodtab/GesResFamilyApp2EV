@@ -12,7 +12,7 @@ Junto con el desarrollo de la aplicación se entregará un enunciado con el nomb
 
 * ✔ La aplicación deberá consumir la API diseñada y desarrollada en la asignatura de Acceso a Datos. Al menos 2 operaciones de cada uno de estos métodos: POST, GET, PUT y DELETE. Al menos una de ellas permitirá listar información 
 * ✔ La comunicación con la API se llevará a cabo utilizando Retrofit 
-* Se hará uso de mapas para mostrar información (si es necesario, habrá que añadir información geográfica a alguno de los recursos de la API diseñada)
+* ✔ Se hará uso de mapas para mostrar información (si es necesario, habrá que añadir información geográfica a alguno de los recursos de la API diseñada)
 * ✔ La aplicación se diseñará utilizando el patrón MVP (Model View Presenter) 
 * El usuario podrá almacenar como “favorito” aquella información de la API que le resulte de interés
 

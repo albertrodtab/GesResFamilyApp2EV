@@ -10,13 +10,14 @@ import com.alberto.gesresfamilyapp.util.Converters;
 
 import org.intellij.lang.annotations.Pattern;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
 
 @Entity
 @AllArgsConstructor
-public class Profesional {
+public class Profesional implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     private long id;

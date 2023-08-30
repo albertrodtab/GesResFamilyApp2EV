@@ -88,7 +88,7 @@ public class ProfesionalesListView extends AppCompatActivity implements Profesio
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.registrar) {
             //Con Intent de digo donde estoy y a donde quiero ir
-            Intent intent = new Intent(this, RegisterProfesionalActivity.class);
+            Intent intent = new Intent(this, RegisterProfesionalView.class);
             startActivity(intent);
             return true;
         }

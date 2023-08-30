@@ -9,33 +9,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
+import com.alberto.gesresfamilyapp.contract.profesional.DeleteProfesionalContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.view.profesional.RegisterProfesionalActivity;
+import com.alberto.gesresfamilyapp.presenter.profesional.DeleteProfesionalPresenter;
+import com.alberto.gesresfamilyapp.view.profesional.RegisterProfesionalView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
-public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.ProfesionalHolder>{
+public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.ProfesionalHolder>
+    implements DeleteProfesionalContract.view{
 
     private List<Profesional> profesionalList;
     //esto sirve para guardar la posición para luego poder hacer cosas con ellos.
     private Context context;
 
     private int selectedPosition;
+    private DeleteProfesionalPresenter deleteProfesionalPresenter;
 
     public ProfesionalAdapter(Context context, List<Profesional> dataList) {
         this.context = context;
         this.profesionalList = dataList;
+        this.deleteProfesionalPresenter = new DeleteProfesionalPresenter(this);
 
         //esto indica que no hay ninguno seleccionado
         selectedPosition = -1;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     //Patron Holder (ESTO
@@ -74,7 +84,7 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
         } else {
             // Mostrar una imagen de placeholder si no hay foto disponible
             Glide.with(context)
-                    .load(R.drawable.icons8_city_buildings_100)
+                    .load(R.drawable.profesional)
                     .into(holder.profesionalImagen);
         }
     }
@@ -82,6 +92,16 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
     @Override
     public int getItemCount() {
         return profesionalList.size();
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     public class ProfesionalHolder extends RecyclerView.ViewHolder{
@@ -159,10 +179,8 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             builder.setMessage(R.string.estasSeguroDeBorrarElProfesional)
                     .setTitle(R.string.ConfirmarBorrado)
                     .setPositiveButton(R.string.si, (dialog, id) -> {
-                        final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "Gesresfamily")
-                                .allowMainThreadQueries().build();
                         Profesional profesional = profesionalList.get(position);
-                        db.profesionalDao().delete(profesional);
+                        deleteProfesionalPresenter.deleteProfesional(profesional.getId());
 
                         profesionalList.remove(position);
                         notifyItemRemoved(position);
@@ -179,14 +197,14 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
                     .setPositiveButton(R.string.si, (dialog, id) -> {
                         Profesional profesional = profesionalList.get(position);
 
-                        Intent intent = new Intent(context, RegisterProfesionalActivity.class);
-                        intent.putExtra("modify_profesional", true);
-                        intent.putExtra("id", profesional.getId());
+                        Intent intent = new Intent(context, RegisterProfesionalView.class);
+                        intent.putExtra("modify_profesional", profesional);
+                       /* intent.putExtra("id", profesional.getId());
                         intent.putExtra("nombre", profesional.getNombre());
                         intent.putExtra("apellidos", profesional.getApellidos());
                         intent.putExtra("dni", profesional.getDni());
                         //intent.putExtra("fechaNac", profesional.getFechaNacimiento());
-                        intent.putExtra("categoria", profesional.getCategoria());
+                        intent.putExtra("categoria", profesional.getCategoria());*/
 
                         context.startActivity(intent);
                     })
