@@ -10,5 +10,13 @@
         android:title="Registrar"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/favorito"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:iconTint="@color/purple_700"
+        android:iconTintMode="add"
+        android:title="Registrar"
+        app:showAsAction="always" />
+
 
 </menu>
