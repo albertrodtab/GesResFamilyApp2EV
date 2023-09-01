@@ -1,9 +1,10 @@
 package com.alberto.gesresfamilyapp.view.profesional;
 
-import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
+import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME_FAV;
 
-import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,29 +16,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.adapter.ProfesionalAdapter;
-import com.alberto.gesresfamilyapp.contract.profesional.ProfesionalesListContract;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
-import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.presenter.profesional.ProfesionalesListPresenter;
+import com.alberto.gesresfamilyapp.adapter.FavProfesionalAdapter;
+import com.alberto.gesresfamilyapp.db.GesResFavourites;
+import com.alberto.gesresfamilyapp.domain.Favourite;
 import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfesionalesListView extends AppCompatActivity implements ProfesionalesListContract.view {
+public class FavProfesionalesListView extends AppCompatActivity {
 
-    public static List<Profesional> profesionalesList = new ArrayList<>();
-    private ProfesionalAdapter adapter;
+    public static List<Favourite> favProfesionalesList = new ArrayList<>();
+    private FavProfesionalAdapter adapter;
 
-    private ProfesionalesListPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profesionales);
-
-        presenter = new ProfesionalesListPresenter(this);
+        setContentView(R.layout.activity_fav_profesionales);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -54,9 +50,10 @@ public class ProfesionalesListView extends AppCompatActivity implements Profesio
     }
 
         private void initializeRecyclerView(){
-        profesionalesList = new ArrayList<>();
+        favProfesionalesList = new ArrayList<>();
+        Log.i("favoritos", "lista de favoritos " + favProfesionalesList.size());
 
-        RecyclerView recyclerView = findViewById(R.id.profesionales_list);
+        RecyclerView recyclerView = findViewById(R.id.fav_profesionales_list);
         //esto le dice que tenga un tamaño fijo y que ocupe el máximo espacio asignado
         recyclerView.setHasFixedSize(true);
         //Esto le dice que lo va a gestionar un linear layout manager
@@ -64,17 +61,28 @@ public class ProfesionalesListView extends AppCompatActivity implements Profesio
         //así se ciñe al Layout manager
         recyclerView.setLayoutManager(layoutManager);
         //hago mi adapter propio no utilizo el arrayadapter de android
-        adapter = new ProfesionalAdapter(this, profesionalesList);
+        adapter = new FavProfesionalAdapter(this, favProfesionalesList);
         recyclerView.setAdapter(adapter);
+        Log.i("favoritos", "lista de favoritos " + favProfesionalesList.size());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        presenter.loadAllProfesionales();
 
-        final AppDatabase db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
+
+        final GesResFavourites db = Room.databaseBuilder(this, GesResFavourites.class, DATABASE_NAME_FAV)
                 .allowMainThreadQueries().build();
+        try {
+            favProfesionalesList.clear();
+            favProfesionalesList.addAll(db.getFavouriteDAO().getAllFavourites());
+            Log.i("favoritos", "lista de favoritos " + favProfesionalesList.size());
+            adapter.notifyDataSetChanged();
+        } catch (SQLiteConstraintException sce) {
+
+        } finally {
+            db.close();
+        }
 
     }
 
@@ -86,17 +94,12 @@ public class ProfesionalesListView extends AppCompatActivity implements Profesio
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.registrar) {
+        /*if (item.getItemId() == R.id.registrar) {
             //Con Intent de digo donde estoy y a donde quiero ir
             Intent intent = new Intent(this, RegisterProfesionalView.class);
             startActivity(intent);
             return true;
-        }else if (item.getItemId() == R.id.favorito) {
-            //Con Intent de digo donde estoy y a donde quiero ir
-            Intent intent = new Intent(this, FavProfesionalesListView.class);
-            startActivity(intent);
-            return true;
-        }
+        }*/
         return false;
     }
 
@@ -104,10 +107,10 @@ public class ProfesionalesListView extends AppCompatActivity implements Profesio
         onBackPressed();
     }
 
-    @Override
-    public void showProfesionales(List<Profesional> profesionales) {
-        profesionalesList.clear();
-        profesionalesList.addAll(profesionales);
+    /*@Override
+    public void showFavProfesionales(List<Favourite> profesionales) {
+        favProfesionalesList.clear();
+        favProfesionalesList.addAll(profesionales);
         // con esto la lista siempre estára actualizada cuando vuelva de un segundo plano.
         adapter.notifyDataSetChanged();
 
@@ -116,7 +119,7 @@ public class ProfesionalesListView extends AppCompatActivity implements Profesio
     @Override
     public void showMessage(String message) {
 
-    }
+    }*/
 }
 
 
