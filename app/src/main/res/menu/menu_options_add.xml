@@ -12,10 +12,10 @@
 
     <item
         android:id="@+id/favorito"
-        android:icon="@android:drawable/ic_menu_info_details"
+        android:icon="@drawable/ic_fav"
         android:iconTint="@color/purple_700"
         android:iconTintMode="add"
-        android:title="Registrar"
+        android:title="Favoritos"
         app:showAsAction="always" />
 
 

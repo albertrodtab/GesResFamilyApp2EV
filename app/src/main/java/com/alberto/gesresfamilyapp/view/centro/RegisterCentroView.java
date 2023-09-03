@@ -3,6 +3,7 @@ package com.alberto.gesresfamilyapp.view.centro;
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,6 +34,8 @@ import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.alberto.gesresfamilyapp.presenter.centro.ModifyCentroPresenter;
 import com.alberto.gesresfamilyapp.presenter.centro.RegisterCentroPresenter;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -92,10 +95,17 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
 
     private ModifyCentroPresenter modifyCentroPresenter;
 
+    private FusedLocationProviderClient fusedLocationClient;
+
+    private double gpsLatitude;
+    private double gpsLongitude;
+    private Point pointCentro;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_register_centro);
@@ -119,13 +129,14 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         double defaultLatitude = -8.105759; // Latitud por defecto
         double defaultLongitude = 42.644695; // Longitud por defecto
 
-        setCameraPosition(Point.fromLngLat(defaultLatitude, defaultLongitude)); //Fijamos la camara del mapa en la posicion por defecto
+        //setCameraPosition(Point.fromLngLat(defaultLatitude, defaultLongitude)); //Fijamos la camara del mapa en la posicion por defecto
+        gps();
 
         GesturesPlugin gesturesPlugin = GesturesUtils.getGestures(mapView);
         gesturesPlugin.addOnMapClickListener(point -> { //Cuando hacemos click en el mapa devolvemos un point
             removeAllMarkers(); //Método creado para borrar los anteriores antes de seleccionar alguna para no tener problemas con los point
             this.point = point; //Ese point lo guardamos para tener la longuitud y latitude
-            addMarker(point);
+            addMarker(point.latitude(), point.longitude(), "", R.mipmap.ic_centro_mayores_foreground);
             return true;
         });
 
@@ -205,9 +216,9 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         //loadImage(centro.getPhotoUri());
 
         //recupero la información de coordenadas del centro y lo pinto en el mapa y centro el foco en el
-        Point pointCentro = Point.fromLngLat(centro.getLongitude(),centro.getLatitude());
-        setCameraPosition(pointCentro); //Fijamos la camara en la posicion del centro
-        addMarker(pointCentro);
+        pointCentro = Point.fromLngLat(centro.getLongitude(),centro.getLatitude());
+        setCameraPosition(centro.getLongitude(), centro.getLatitude()); //Fijamos la camara en la posicion del centro
+        addMarker(centro.getLatitude(), centro.getLongitude(), centro.getNombre(), R.mipmap.ic_centro_mayores_foreground);
 
         //etDireccion.setText(centro.getDireccion());
         //etMail.setText(centro.getEmail());
@@ -259,6 +270,8 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         String numRegistro = tilNumRegistro.getEditText().getText().toString();
         String telefono = tilTelefono.getEditText().getText().toString();
         String mail = tilEmail.getEditText().getText().toString();
+        double latitude = centro.getLatitude();
+        double longitude = centro.getLongitude();
         //String direccion = etDireccion.getText().toString();
         //String numRegistro = etNumRegistro.getText().toString();
         //String telefono = etTelefono.getText().toString();
@@ -266,10 +279,12 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         boolean tieneWifi = cbWifi.isChecked();
 
         //If por si acaso el point no está creado, el usuario no ha selecionado nada en el mapa, asi no da error al crear la tarea porque falte latitude y longuitude
-        if (point == null) {
-            Toast.makeText(this, R.string.IndicaLaPosicionDelCentroEnElMapa, Toast.LENGTH_LONG).show();
+        if (pointCentro == null) {
+            if (point == null) {
+                Toast.makeText(this, R.string.IndicaLaPosicionDelCentroEnElMapa, Toast.LENGTH_LONG).show();
 //            Snackbar.make(tilNambre, R.string.select_location_message, BaseTransientBottomBar.LENGTH_LONG); //tilNombre porque el Snackbar hay que asociarlo algún componente del layout
-            return;
+                return;
+            }
         }
 
         //Conseguimos la ruta de almacenamiento, si no existe, la creamos
@@ -289,8 +304,8 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
             centro.setTelefono(telefono);
             centro.setEmail(mail);
             centro.setTieneWifi(tieneWifi);
-            centro.setLatitude(point.latitude());
-            centro.setLongitude(point.longitude());
+            centro.setLatitude(latitude);
+            centro.setLongitude(longitude);
 
 
 
@@ -438,14 +453,13 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
 
     }
 
-    private void setCameraPosition(Point point) {
+    private void setCameraPosition(double latitude, double longitude) {
         CameraOptions cameraPosition = new CameraOptions.Builder()
-                .center(point)
-                .pitch(0.0)
-                .zoom(10.0)
-                .bearing(-17.6)
+                .center(Point.fromLngLat(longitude, latitude))
+                .pitch(45.0)
+                .zoom(15.5)
+                .bearing(0.0)
                 .build();
-
         mapView.getMapboxMap().setCamera(cameraPosition);
     }
 
@@ -460,13 +474,20 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
 
     /**
      * Método para añadir un Marker sobre un mapa
-     * @param point le pasamos el point con los datos de latitude y longuitude
+     * @param
      * @param "String" le podemos pasar un titulo para que aparezca en el mapa
      */
-    private void addMarker(Point point) {
+    /*private void addMarker(Point point) {
         PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
                 .withPoint(point)
                 .withIconImage(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_centro_foreground)); //le pasamos el dibujo que queremos que pinte como icono
+        pointAnnotationManager.create(pointAnnotationOptions);
+    }*/
+    private void addMarker(double latitude, double longitude, String title, int id) {
+        PointAnnotationOptions pointAnnotationOptions = new PointAnnotationOptions()
+                .withPoint(Point.fromLngLat(longitude, latitude))
+                .withIconImage(BitmapFactory.decodeResource(getResources(), id))
+                .withTextField(title);
         pointAnnotationManager.create(pointAnnotationOptions);
     }
 
@@ -502,6 +523,31 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         etTelefono.setText("");
         cbWifi.setChecked(false);
         etNombre.requestFocus();
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void gps() {
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, location -> {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        gpsLongitude = location.getLongitude();
+                        gpsLatitude = location.getLatitude();
+                        Log.i("gps: ", "+++++++++++");
+                        Log.i("gps: ", String.valueOf(location.getLongitude()));
+                        Log.i("gps: ", String.valueOf(location.getLatitude()));
+                        Log.i("gps: ", String.valueOf(location));
+
+                        setCameraPosition(gpsLatitude, gpsLongitude);
+
+
+
+                        addMarker(gpsLatitude, gpsLongitude, "Estás Aquí", R.mipmap.ic_residente_foreground);
+
+                    }
+                });
 
     }
 }

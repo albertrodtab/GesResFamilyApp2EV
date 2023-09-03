@@ -88,7 +88,7 @@ public class FavProfesionalesListView extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_options_add, menu);
+        getMenuInflater().inflate(R.menu.menu_options_clear, menu);
         return true;
     }
 
