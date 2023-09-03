@@ -213,7 +213,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         tilTelefono.getEditText().setText(centro.getTelefono());
         tilEmail.getEditText().setText(centro.getEmail());
         cbWifi.setChecked(centro.getTieneWifi());
-        //loadImage(centro.getPhotoUri());
+        loadImage(centro.getPhotoUri());
 
         //recupero la información de coordenadas del centro y lo pinto en el mapa y centro el foco en el
         pointCentro = Point.fromLngLat(centro.getLongitude(),centro.getLatitude());
