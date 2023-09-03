@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_options_add"
         app:navigationIcon="?attr/actionModeCloseDrawable"
-        app:title="@string/titProfesinales"
+        app:title="Prof Favoritos"
         app:titleCentered="false"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Display1"
         app:titleTextColor="@color/design_default_color_on_primary" />
