@@ -19,10 +19,10 @@ import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.contract.centro.RegisterCentroContract;
-import com.alberto.gesresfamilyapp.contract.profesional.RegisterProfesionalContract;
+import com.alberto.gesresfamilyapp.contract.profesional.DetailsProfesionalContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
 import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.presenter.centro.ModifyCentroPresenter;
+import com.alberto.gesresfamilyapp.presenter.profesional.DetailsProfesionalPresenter;
 import com.alberto.gesresfamilyapp.presenter.profesional.ModifyProfesionalPresenter;
 import com.alberto.gesresfamilyapp.presenter.profesional.RegisterProfesionalPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class RegisterProfesionalView extends AppCompatActivity implements RegisterProfesionalContract.view {
+public class DetailsProfesionalView extends AppCompatActivity implements DetailsProfesionalContract.view {
 
     private static final int REQUEST_SELECT_PHOTO = 1;
 
@@ -61,7 +61,7 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
 
     private RegisterProfesionalPresenter registerProfesionalPresenter;
 
-    private ModifyProfesionalPresenter modifyProfesionalPresenter;
+    private DetailsProfesionalPresenter detailsProfesionalPresenter;
 
 
 
@@ -69,7 +69,8 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_register_profesional);
+        setContentView(R.layout.activity_details_profesional);
+        detailsProfesionalPresenter = new DetailsProfesionalPresenter(this);
 
         MaterialToolbar topAppBar = findViewById(R.id.topAppBar);
         setSupportActionBar(topAppBar);
@@ -127,21 +128,13 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
                 .allowMainThreadQueries().build();
 
         Intent intent = getIntent();
-        long profesionalId = intent.getLongExtra("id", -1);
-        isModifyProfesional = (Profesional) intent.getSerializableExtra("modify_profesional");
+        long profesionalId = intent.getLongExtra("idProfesional", 0);
 
-        if (isModifyProfesional != null) {
-            profesional = isModifyProfesional;
-            fillData(profesional);
-            loadImage(profesional.getPhotoUri());
-
-        } else {
-            profesional = new Profesional();
-
-        }
-        registerProfesionalPresenter = new RegisterProfesionalPresenter(this);
-        modifyProfesionalPresenter = new ModifyProfesionalPresenter(this);
+        //registerProfesionalPresenter = new RegisterProfesionalPresenter(this);
+        detailsProfesionalPresenter.loadProfesional(profesionalId);
     }
+
+
 
 
     private void fillData(Profesional profesional) {
@@ -217,92 +210,26 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
         return null;
     }
 
-    public void registerProfesional(View view) {
-        String nombre = tilNombre.getEditText().getText().toString();
-        String apellidos = tilApellidos.getEditText().getText().toString();
-        String dni = tilDni.getEditText().getText().toString();
-        //Editable editableFechaNac = etFechaNac.getText();
-        //String fechaNacString = editableFechaNac.toString();
-
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        //Date fechaNac = null;
-        //try {
-        //    fechaNac = dateFormat.parse(fechaNacString);
-        //} catch (ParseException e) {
-        //    e.printStackTrace();
-        //}
-        String categoria = tilCategoria.getEditText().getText().toString();
 
 
-        if (isModifyProfesional != null) {
-            profesional.setNombre(nombre);
-            profesional.setApellidos(apellidos);
-            profesional.setDni(dni);
-            //profesional.setFechaNacimiento(fechaNac);
-            profesional.setCategoria(categoria);
-
-            if (nombre == null || nombre.isEmpty()) {
-                Toast.makeText(this, R.string.profesionalNombreVacio, Toast.LENGTH_LONG).show();
-                etNombre.setText(nombre);
-                etApellidos.setText(apellidos);
-                etDni.setText(dni);
-                etCategoria.setText(categoria);
-            } else {
-                modifyProfesionalPresenter.modifyProfesional(profesional);
-                Toast.makeText(this, R.string.profesionalModificado, Toast.LENGTH_LONG).show();
-                resetForm();
-            }
-
-        } else {
-            profesional.setNombre(nombre);
-            profesional.setApellidos(apellidos);
-            profesional.setDni(dni);
-            //profesional.setFechaNacimiento(fechaNac);
-            profesional.setCategoria(categoria);
-
-            if (nombre == null || nombre.isEmpty()) {
-                Toast.makeText(this, R.string.profesionalNombreVacio, Toast.LENGTH_LONG).show();
-                etNombre.setText(nombre);
-                etApellidos.setText(apellidos);
-                etDni.setText(dni);
-                etCategoria.setText(categoria);
-            } else {
-                profesional.setNombre(nombre);
-                profesional.setApellidos(apellidos);
-                profesional.setDni(dni);
-                //profesional.setFechaNacimiento(fechaNac);
-                profesional.setCategoria(categoria);
-
-                registerProfesionalPresenter.registerProfesional(profesional);
-                Toast.makeText(this, R.string.profesionalRegistado, Toast.LENGTH_LONG).show();
-                resetForm();
-            }
-        }
-    }
-
-    @Override
-    public void resetForm() {
-        etNombre.setText("");
-        etApellidos.setText("");
-        etDni.setText("");
-        etCategoria.setText("");
-        etNombre.requestFocus();
-
-    }
 
     public void cancel(View view) {
         onBackPressed();
     }
 
-    public void showMessage(String message) {
-        Snackbar.make((findViewById(R.id.etNombre)), message,
-                BaseTransientBottomBar.LENGTH_LONG).show();
+    public void showProfesional(Profesional profesional) {
+        fillData(profesional);
     }
 
     public void showError(String errorMessage) {
         Snackbar.make((findViewById(R.id.etNombre)), errorMessage,
                 BaseTransientBottomBar.LENGTH_LONG).show();
 
+
+    }
+
+    @Override
+    public void showMessage(String message) {
 
     }
 }

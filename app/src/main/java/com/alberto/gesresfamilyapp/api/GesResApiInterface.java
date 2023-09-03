@@ -39,6 +39,9 @@ public interface GesResApiInterface {
     @GET("profesionales")
     Call<List<Profesional>> getProfesionales();
 
+    @GET ("profesional/{id}")
+    Call<Profesional> getProfesional(@Path("id") long id);
+
     @POST("profesionales")
     Call<Profesional> addProfesional(@Body Profesional profesional);
 

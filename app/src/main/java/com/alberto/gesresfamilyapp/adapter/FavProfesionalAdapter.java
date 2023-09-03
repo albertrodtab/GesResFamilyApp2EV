@@ -2,7 +2,9 @@ package com.alberto.gesresfamilyapp.adapter;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME_FAV;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,8 @@ import com.alberto.gesresfamilyapp.R;
 import com.alberto.gesresfamilyapp.db.GesResFavourites;
 import com.alberto.gesresfamilyapp.domain.Favourite;
 import com.alberto.gesresfamilyapp.domain.Profesional;
+import com.alberto.gesresfamilyapp.view.profesional.DetailsProfesionalView;
+import com.alberto.gesresfamilyapp.view.profesional.RegisterProfesionalView;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
@@ -83,16 +87,20 @@ public class FavProfesionalAdapter extends RecyclerView.Adapter<FavProfesionalAd
 
         public Button btDelFav;
 
+        public Button btDetails;
+
         public FavProfesionalHolder(View view) {
             super(view);
             parentView = view;
 
             profesionalNombre = view.findViewById(R.id.tilNombre);
             btDelFav = view.findViewById(R.id.btDelFav);
+            btDetails = view.findViewById(R.id.btDetails);
 
 
             //click on button (remove task from de list).
             btDelFav.setOnClickListener(v -> setFavourite(getAdapterPosition()));
+            btDetails.setOnClickListener(v -> details(getAdapterPosition()));
 
 
         }
@@ -133,6 +141,17 @@ public class FavProfesionalAdapter extends RecyclerView.Adapter<FavProfesionalAd
             }
         }
 
+        private void details(int position) {
+
+        Favourite favourite = favProfesionalList.get(position);
+        long idProfesional = favourite.getIdProfesional();
+        Intent intent = new Intent(context, DetailsProfesionalView.class);
+        intent.putExtra("idProfesional", favourite.getIdProfesional());
+
+
+        context.startActivity(intent);
+
+        }
 
     }
 

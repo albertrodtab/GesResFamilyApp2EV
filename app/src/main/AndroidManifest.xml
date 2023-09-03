@@ -57,6 +57,9 @@
             android:name=".view.profesional.RegisterProfesionalView"
             android:exported="false" />
         <activity
+            android:name=".view.profesional.DetailsProfesionalView"
+            android:exported="false" />
+        <activity
             android:name=".view.residente.ResidentesListView"
             android:exported="false" />
         <activity
