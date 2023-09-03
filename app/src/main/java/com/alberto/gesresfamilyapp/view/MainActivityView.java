@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 
 import com.alberto.gesresfamilyapp.R;
+import com.alberto.gesresfamilyapp.view.centro.CentrosListView;
+import com.alberto.gesresfamilyapp.view.profesional.ProfesionalesListView;
+import com.alberto.gesresfamilyapp.view.residente.ResidentesListView;
 
 public class MainActivityView extends AppCompatActivity {
 

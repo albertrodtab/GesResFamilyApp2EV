@@ -5,11 +5,13 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 
 @Entity
 @AllArgsConstructor
-public class Centro {
+public class Centro implements Serializable {
 
     @PrimaryKey (autoGenerate = true)
     @NonNull

@@ -6,19 +6,21 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.view.RegisterCentroView;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
+import com.alberto.gesresfamilyapp.contract.centro.DeleteCentroContract;
+import com.alberto.gesresfamilyapp.presenter.centro.DeleteCentroPresenter;
+import com.alberto.gesresfamilyapp.view.centro.RegisterCentroView;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
@@ -28,7 +30,8 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 
 import java.util.List;
 
-public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHolder>{
+public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHolder>
+        implements DeleteCentroContract.view {
 
     private List<Centro> centroList;
     //esto sirve para guardar la posición para luego poder hacer cosas con ellos.
@@ -38,12 +41,19 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
 
     private PointAnnotationManager pointAnnotationManager;
 
+    private DeleteCentroPresenter deleteCentroPresenter;
+
     public CentroAdapter(Context context, List<Centro> dataList) {
         this.context = context;
         this.centroList = dataList;
+        this.deleteCentroPresenter = new DeleteCentroPresenter(this);
 
         //esto indica que no hay ninguno seleccionado
         selectedPosition = -1;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     //Patron Holder (ESTO ESTOY OBLIGADO A HACERLO SIEMPRE)
@@ -88,6 +98,16 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
     @Override
     public int getItemCount() {
         return centroList.size();
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     public class CentroHolder extends RecyclerView.ViewHolder{
@@ -171,10 +191,13 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
             builder.setMessage(R.string.estasSeguroDeBorrarElCentro)
                     .setTitle(R.string.borrarCentro)
                     .setPositiveButton(R.string.si, (dialog, id) -> {
-                        final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "Gesresfamily")
-                                .allowMainThreadQueries().build();
                         Centro centro = centroList.get(position);
-                        db.centroDao().delete(centro);
+                        Log.d("centros", "centro id "+ centro.getId());
+                        long idCentro;
+
+                        idCentro = centro.getId();
+                        Log.d("centros", "centro id "+ idCentro);
+                        deleteCentroPresenter.deleteCentro(idCentro);
 
                         centroList.remove(position);
                         notifyItemRemoved(position);
@@ -192,14 +215,14 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
                         Centro centro = centroList.get(position);
 
                         Intent intent = new Intent(context, RegisterCentroView.class);
-                        intent.putExtra("modify_centro", true);
-                        intent.putExtra("id", centro.getId());
+                        intent.putExtra("modify_centro", centro);
+                        /*intent.putExtra("id", centro.getId());
                         intent.putExtra("nombre", centro.getNombre());
                         intent.putExtra("direccion", centro.getDireccion());
                         intent.putExtra("num_registro", centro.getNumRegistro());
                         intent.putExtra("telefono", centro.getTelefono());
                         intent.putExtra("email", centro.getEmail());
-                        intent.putExtra("tieneWifi", centro.getTieneWifi());
+                        intent.putExtra("tieneWifi", centro.getTieneWifi());*/
 
                         context.startActivity(intent);
                     })

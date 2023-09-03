@@ -52,4 +52,5 @@
     <string name="titProfesinales">Profesionales</string>
     <string name="titResidentes">Residentes</string>
     <string name="centroNombreVacio">El centro debe tener un nombre</string>
+    <string name="profesionalNombreVacio">El nombre del profesional debe estar relleno</string>
 </resources>

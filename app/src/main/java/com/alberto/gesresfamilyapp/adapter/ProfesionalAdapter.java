@@ -1,41 +1,59 @@
 package com.alberto.gesresfamilyapp.adapter;
 
+import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME_FAV;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
-import com.alberto.gesresfamilyapp.db.AppDatabase;
+import com.alberto.gesresfamilyapp.contract.profesional.DeleteProfesionalContract;
+import com.alberto.gesresfamilyapp.db.GesResFavourites;
+import com.alberto.gesresfamilyapp.domain.Favourite;
 import com.alberto.gesresfamilyapp.domain.Profesional;
-import com.alberto.gesresfamilyapp.view.RegisterProfesionalActivity;
+import com.alberto.gesresfamilyapp.presenter.profesional.DeleteProfesionalPresenter;
+import com.alberto.gesresfamilyapp.view.profesional.RegisterProfesionalView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.List;
 
-public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.ProfesionalHolder>{
+public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.ProfesionalHolder>
+    implements DeleteProfesionalContract.view{
 
     private List<Profesional> profesionalList;
     //esto sirve para guardar la posición para luego poder hacer cosas con ellos.
     private Context context;
 
     private int selectedPosition;
+    private DeleteProfesionalPresenter deleteProfesionalPresenter;
+
+    //private CheckBox iconFav;
 
     public ProfesionalAdapter(Context context, List<Profesional> dataList) {
         this.context = context;
         this.profesionalList = dataList;
+        this.deleteProfesionalPresenter = new DeleteProfesionalPresenter(this);
 
         //esto indica que no hay ninguno seleccionado
         selectedPosition = -1;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     //Patron Holder (ESTO
@@ -62,6 +80,7 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
         //holder.profesionalFechaNac.setText(fechaNacimientoString);
         holder.profesionalCategoria.getEditText().setText(profesionalList.get(position).getCategoria());
 
+
         Profesional profesional = profesionalList.get(position);
 
         // Cargar y mostrar la foto en el ImageView
@@ -74,7 +93,7 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
         } else {
             // Mostrar una imagen de placeholder si no hay foto disponible
             Glide.with(context)
-                    .load(R.drawable.icons8_city_buildings_100)
+                    .load(R.drawable.profesional)
                     .into(holder.profesionalImagen);
         }
     }
@@ -82,6 +101,16 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
     @Override
     public int getItemCount() {
         return profesionalList.size();
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
     }
 
     public class ProfesionalHolder extends RecyclerView.ViewHolder{
@@ -99,6 +128,8 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
         public View parentView;
         public Button btMod;
 
+        public Button btFav;
+
         public ProfesionalHolder(View view) {
             super(view);
             parentView = view;
@@ -114,6 +145,8 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             btDelete = view.findViewById(R.id.btDelete);
 
             btMod = view.findViewById(R.id.btMod);
+            btFav= view.findViewById(R.id.btDelFav);
+            //iconFav = view.findViewById(R.id.iconFav);
 
 //            doTaskButton = view.findViewById(R.id.do_task_button);
 
@@ -130,6 +163,16 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             btDelete.setOnClickListener(v -> deleteProfesional(getAdapterPosition()));
 
             btMod.setOnClickListener(v-> modifyProfesional(getAdapterPosition()));
+            btFav.setOnClickListener(v -> setFavourite(getAdapterPosition()));
+            /*iconFav.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+                int position = getAdapterPosition();
+                setCheckboxed(position);
+                setFavourite(position);
+
+
+            });*/
+
         }
 
 /*        private void doTask(int position){
@@ -159,10 +202,8 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
             builder.setMessage(R.string.estasSeguroDeBorrarElProfesional)
                     .setTitle(R.string.ConfirmarBorrado)
                     .setPositiveButton(R.string.si, (dialog, id) -> {
-                        final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "Gesresfamily")
-                                .allowMainThreadQueries().build();
                         Profesional profesional = profesionalList.get(position);
-                        db.profesionalDao().delete(profesional);
+                        deleteProfesionalPresenter.deleteProfesional(profesional.getId());
 
                         profesionalList.remove(position);
                         notifyItemRemoved(position);
@@ -179,14 +220,14 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
                     .setPositiveButton(R.string.si, (dialog, id) -> {
                         Profesional profesional = profesionalList.get(position);
 
-                        Intent intent = new Intent(context, RegisterProfesionalActivity.class);
-                        intent.putExtra("modify_profesional", true);
-                        intent.putExtra("id", profesional.getId());
+                        Intent intent = new Intent(context, RegisterProfesionalView.class);
+                        intent.putExtra("modify_profesional", profesional);
+                       /* intent.putExtra("id", profesional.getId());
                         intent.putExtra("nombre", profesional.getNombre());
                         intent.putExtra("apellidos", profesional.getApellidos());
                         intent.putExtra("dni", profesional.getDni());
                         //intent.putExtra("fechaNac", profesional.getFechaNacimiento());
-                        intent.putExtra("categoria", profesional.getCategoria());
+                        intent.putExtra("categoria", profesional.getCategoria());*/
 
                         context.startActivity(intent);
                     })
@@ -197,4 +238,87 @@ public class ProfesionalAdapter extends RecyclerView.Adapter<ProfesionalAdapter.
         }
 
     }
+
+    private void setFavourite(int position) {
+        final GesResFavourites db = Room.databaseBuilder(context, GesResFavourites.class, DATABASE_NAME_FAV).allowMainThreadQueries().build();
+        try {
+            Profesional profesional = profesionalList.get(position);
+            Favourite favourite = db.getFavouriteDAO().getFavourite(profesional.getId());
+
+            if (favourite == null) {
+                long idProfesional = profesional.getId();
+                Log.i("favorito", " checkedIdProfesional: " + idProfesional);
+                Favourite insert = new Favourite(profesional.getId(), profesional.getNombre());
+                Log.i("favorito", " checkedIdProfesional: " + idProfesional);
+
+                db.getFavouriteDAO().insert(insert);
+                Log.i("favorito", "favorito añadido "+ profesional.getNombre());
+            } /*else {
+                long idProfesional = profesional.getId();
+                Log.i("favorito", "elseIdProfesional: " + idProfesional);
+                Favourite delete = db.getFavouriteDAO().getFavourite(profesional.getId());
+                Log.i("favorito", "elseIdProfesional: " + idProfesional);
+                db.getFavouriteDAO().delete(favourite);
+            }*/
+            notifyDataSetChanged();
+        } catch (SQLiteConstraintException sce) {
+
+            sce.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }
+
+    //Esto es para intentar trabajar con icono de favoritos, pero me da algún error, pte de revisar.
+    /*private void setFavouriteCheckBox(int position) {
+        final GesResFavourites db = Room.databaseBuilder(context, GesResFavourites.class, DATABASE_NAME_FAV).allowMainThreadQueries().build();
+        try {
+            Profesional profesional = profesionalList.get(position);
+            if (iconFav.isChecked()) {
+                long idProfesional = profesional.getId();
+                Log.i("favorito", " checkedIdProfesional: " + idProfesional);
+                Favourite insert = new Favourite(profesional.getId(), profesional.getNombre());
+                Log.i("favorito", " checkedIdProfesional: " + idProfesional);
+
+                db.getFavouriteDAO().insert(insert);
+                Log.i("favorito", "favorito añadido "+ profesional.getNombre());
+            } else {
+                long idProfesional = profesional.getId();
+                Log.i("favorito", "elseIdProfesional: " + idProfesional);
+                Favourite delete = db.getFavouriteDAO().getFavourite(profesional.getId());
+                Log.i("favorito", "elseIdProfesional: " + idProfesional);
+                db.getFavouriteDAO().delete(delete);
+            }
+            notifyDataSetChanged();
+        } catch (SQLiteConstraintException sce) {
+
+            sce.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }
+
+    private void setCheckboxed(int position) {
+        final GesResFavourites db = Room.databaseBuilder(context, GesResFavourites.class, DATABASE_NAME_FAV).allowMainThreadQueries().build();
+        Profesional profesional = profesionalList.get(position);
+        try {
+            Favourite favourite = db.getFavouriteDAO().getFavourite(profesional.getId());
+            if(favourite != null){
+                iconFav.setChecked(true);
+
+            } else {
+                iconFav.setChecked(false);
+
+
+            }
+        } catch (SQLiteConstraintException sce) {
+
+            sce.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }*/
 }
+
+
+
