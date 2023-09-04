@@ -331,7 +331,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
 
                 modifyCentroPresenter.modifyCentro(centro);
 
-                Toast.makeText(this, R.string.centroModificado, Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, R.string.centroModificado, Toast.LENGTH_LONG).show();
                 resetForm();
                 /*etNombre.setText("");
                 etDireccion.setText("");
