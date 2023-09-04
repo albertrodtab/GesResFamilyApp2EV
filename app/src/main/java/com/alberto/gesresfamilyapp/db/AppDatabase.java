@@ -9,14 +9,12 @@ import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.alberto.gesresfamilyapp.domain.Residente;
 import com.alberto.gesresfamilyapp.util.Converters;
 
-@Database(entities = {Centro.class, Profesional.class, Residente.class}, version = 1)
+@Database(entities = {Centro.class, Residente.class}, version = 1)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract CentroDao centroDao();
 
-
-    public abstract ProfesionalDao profesionalDao();
 
 
     public abstract ResidenteDao residenteDao();

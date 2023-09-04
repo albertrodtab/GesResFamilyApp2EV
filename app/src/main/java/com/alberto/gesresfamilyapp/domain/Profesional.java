@@ -11,9 +11,11 @@ import com.alberto.gesresfamilyapp.util.Converters;
 import org.intellij.lang.annotations.Pattern;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 @Entity
 @AllArgsConstructor
@@ -33,7 +35,7 @@ public class Profesional implements Serializable {
     private String dni;
 
     @ColumnInfo (name = "fecha_nacimiento")
-    private Date fechaNacimiento;
+    private String fechaNacimiento;
 
     @ColumnInfo
     private String categoria;
@@ -52,7 +54,7 @@ public class Profesional implements Serializable {
     public Profesional() {
     }
 
-    public Profesional(long id, @NonNull String nombre, Date fechaNacimiento, String apellidos, String dni, String categoria) {
+    public Profesional(long id, @NonNull String nombre, String fechaNacimiento, String apellidos, String dni, String categoria) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -94,11 +96,11 @@ public class Profesional implements Serializable {
         this.dni = dni;
     }
 
-   public Date getFechaNacimiento() {
+   public String getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(Date fechaNacimiento) {
+    public void setFechaNacimiento(String fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 

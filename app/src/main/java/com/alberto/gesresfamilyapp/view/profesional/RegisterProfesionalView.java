@@ -2,18 +2,24 @@ package com.alberto.gesresfamilyapp.view.profesional;
 
 import static com.alberto.gesresfamilyapp.db.Constants.DATABASE_NAME;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.room.Room;
 
@@ -25,7 +31,11 @@ import com.alberto.gesresfamilyapp.domain.Profesional;
 import com.alberto.gesresfamilyapp.presenter.centro.ModifyCentroPresenter;
 import com.alberto.gesresfamilyapp.presenter.profesional.ModifyProfesionalPresenter;
 import com.alberto.gesresfamilyapp.presenter.profesional.RegisterProfesionalPresenter;
+import com.alberto.gesresfamilyapp.util.DatePickerFragment;
+import com.alberto.gesresfamilyapp.util.DateUtils;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -34,7 +44,13 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -53,6 +69,9 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
     //private EditText etFechaNac;
     private TextInputLayout tilCategoria;
     private TextInputEditText etCategoria;
+    private String selectedDate;
+    private TextInputEditText etFechaNacimiento;
+    private TextInputLayout tilFechaNacimiento;
     private ImageView imageView;
 
     private Profesional profesional;
@@ -83,6 +102,7 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
             }
         });
 
+        checkCameraPermission();
 
         photoPickerLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -100,14 +120,14 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
                             loadImage(photoUriString);
 
                             Snackbar.make(imageView, R.string.fotoSeleccionada, BaseTransientBottomBar.LENGTH_LONG).show();
-                        } else {
+                        } /*else {
                             // Foto capturada con la cámara
                             Uri photoUri = Uri.fromFile(createTempImageFile());
                             String photoUriString = photoUri.toString();
                             profesional.setPhotoUri(photoUriString);
                             loadImage(photoUriString);
                             Snackbar.make(imageView, R.string.fotoCapturada, BaseTransientBottomBar.LENGTH_LONG).show();
-                        }
+                        }*/
                     }
                 }
         );
@@ -116,15 +136,56 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
         tilApellidos = findViewById(R.id.tilApellidos);
         tilDni = findViewById(R.id.tilDni);
         tilCategoria = findViewById(R.id.tilCategoria);
+        tilFechaNacimiento = findViewById(R.id.tilFechaNacimiento);
         etNombre = findViewById(R.id.etNombre);
         etApellidos = findViewById(R.id.etApellidos);
         etDni = findViewById(R.id.etDni);
-        //etFechaNac = findViewById(R.id.etFechaNac);
+        etFechaNacimiento = findViewById(R.id.etFechaNacimiento);
         etCategoria = findViewById(R.id.etCategoria);
         imageView = findViewById(R.id.ivProfesionalReg);
 
         db = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME)
                 .allowMainThreadQueries().build();
+
+        etFechaNacimiento.setOnClickListener(view -> {
+            CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+            /*constraintsBuilder.setStart(Calendar.getInstance().getTimeInMillis()); // Puedes configurar una fecha de inicio si es necesario
+            constraintsBuilder.setEnd(31/12/3000);*/
+
+            // Supongamos que deseas establecer la fecha predeterminada como la fecha actual
+            Long todayMillis = MaterialDatePicker.todayInUtcMilliseconds();
+
+            MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+            builder.setTitleText("Selecciona una fecha");
+            builder.setSelection(todayMillis);
+            builder.setCalendarConstraints(constraintsBuilder.build());
+
+            MaterialDatePicker<Long> datePicker = builder.build();
+
+            datePicker.addOnPositiveButtonClickListener(
+                    selection -> {
+                        // Aquí puedes obtener la fecha seleccionada en milisegundos
+                        long selectedMillis = datePicker.getSelection();
+
+                        // Convierte los milisegundos a un objeto LocalDate
+                        LocalDate selectedLocalDate = Instant.ofEpochMilli(selectedMillis)
+                                .atZone(ZoneOffset.UTC)
+                                .toLocalDate();
+
+                        // Formatea la fecha en el formato "dd-MM-yyyy"
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                        String formattedDate = selectedLocalDate.format(formatter);
+
+                        // Guarda la fecha formateada en tu variable o base de datos
+                        selectedDate = formattedDate;
+
+                        // Muestra la fecha formateada en el EditText
+                        etFechaNacimiento.setText(formattedDate);
+                    }
+            );
+
+            datePicker.show(getSupportFragmentManager(), datePicker.toString());
+        });
 
         Intent intent = getIntent();
         long profesionalId = intent.getLongExtra("id", -1);
@@ -149,11 +210,14 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
         tilApellidos.getEditText().setText(profesional.getApellidos());
         tilCategoria.getEditText().setText(profesional.getCategoria());
         tilDni.getEditText().setText(profesional.getDni());
+        tilFechaNacimiento.getEditText().setText(profesional.getFechaNacimiento());
+
         //if (profesional.getFechaNacimiento() != null) {
         //    etFechaNac.setText(profesional.getFechaNacimiento().toString());
         //} else {
         //    etFechaNac.setText(""); // or provide a default value or handle the case when fechaNacimiento is null
         //}
+        loadImage(profesional.getPhotoUri());
     }
 
     /*//usando la libreria Glide
@@ -185,7 +249,7 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
 
     public void selectPhoto(View view) {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        /*Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         // Crea un archivo temporal para guardar la foto capturada por la cámara
         File photoFile = createTempImageFile();
@@ -193,10 +257,10 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
         if (photoFile != null) {
             Uri photoUri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".fileprovider", photoFile);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-        }
+        }*/
 
         Intent chooserIntent = Intent.createChooser(galleryIntent, "Seleccionar foto");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{cameraIntent});
+        //chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{cameraIntent});
 
         //startActivityForResult(chooserIntent, REQUEST_SELECT_PHOTO);
         photoPickerLauncher.launch(chooserIntent);
@@ -217,6 +281,7 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
         return null;
     }
 
+
     public void registerProfesional(View view) {
         String nombre = tilNombre.getEditText().getText().toString();
         String apellidos = tilApellidos.getEditText().getText().toString();
@@ -232,6 +297,20 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
         //    e.printStackTrace();
         //}
         String categoria = tilCategoria.getEditText().getText().toString();
+        String fechaNac = selectedDate;
+
+
+
+
+        //Conseguimos la ruta de almacenamiento, si no existe, la creamos
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "GesResFamilyApp");
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
+
+        //Le ponemos nombre al archivo y la extension
+        File imageFile = new File(storageDir, System.currentTimeMillis() + ".jpg");
+        Log.i("RegisterCentro", "register - filePath: " + imageFile);
 
 
         if (isModifyProfesional != null) {
@@ -240,6 +319,8 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
             profesional.setDni(dni);
             //profesional.setFechaNacimiento(fechaNac);
             profesional.setCategoria(categoria);
+            profesional.setFechaNacimiento(fechaNac);
+
 
             if (nombre == null || nombre.isEmpty()) {
                 Toast.makeText(this, R.string.profesionalNombreVacio, Toast.LENGTH_LONG).show();
@@ -259,6 +340,8 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
             profesional.setDni(dni);
             //profesional.setFechaNacimiento(fechaNac);
             profesional.setCategoria(categoria);
+            profesional.setFechaNacimiento(fechaNac);
+
 
             if (nombre == null || nombre.isEmpty()) {
                 Toast.makeText(this, R.string.profesionalNombreVacio, Toast.LENGTH_LONG).show();
@@ -304,6 +387,15 @@ public class RegisterProfesionalView extends AppCompatActivity implements Regist
                 BaseTransientBottomBar.LENGTH_LONG).show();
 
 
+    }
+
+    private void checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.CAMERA)) {
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},226);
+            }
+        }
     }
 }
 
