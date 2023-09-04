@@ -31,6 +31,26 @@
             app:mapbox_cameraTargetLat="40.7128"
             app:mapbox_cameraTargetLng="-74.0060"
             app:mapbox_cameraZoom="9.0" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <Button
+            android:id="@+id/btRoute"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#D5ECE7"
+            android:onClick="getRoute"
+            android:text="Calcular Ruta"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

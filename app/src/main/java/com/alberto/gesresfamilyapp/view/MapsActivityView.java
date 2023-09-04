@@ -2,8 +2,11 @@ package com.alberto.gesresfamilyapp.view;
 
 
 
+import static com.mapbox.core.constants.Constants.PRECISION_6;
+
 import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,10 +22,21 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.mapbox.api.directions.v5.DirectionsCriteria;
+import com.mapbox.api.directions.v5.MapboxDirections;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.api.directions.v5.models.RouteOptions;
+import com.mapbox.core.constants.Constants;
+import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.maps.CameraOptions;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.Style;
+import com.mapbox.maps.extension.style.layers.LayerUtils;
+import com.mapbox.maps.extension.style.layers.generated.LineLayer;
+import com.mapbox.maps.extension.style.sources.SourceUtils;
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource;
 import com.mapbox.maps.plugin.annotation.AnnotationConfig;
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin;
 import com.mapbox.maps.plugin.annotation.AnnotationPluginImplKt;
@@ -34,7 +48,12 @@ import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivityView extends AppCompatActivity implements CentrosListMapsContract.view, Style.OnStyleLoaded {
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MapsActivityView extends AppCompatActivity implements CentrosListMapsContract.view,
+        Style.OnStyleLoaded, Callback<DirectionsResponse> {
 
     private MapView mapView;
 
@@ -44,8 +63,10 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
     private FusedLocationProviderClient fusedLocationClient;
     private PointAnnotationManager pointAnnotationManager;
     public static List<Centro> centroList = new ArrayList<>();
+    public Centro lastCentro;
     private CentrosListMapsPresenter centrosListMapsPresenter;
     private FloatingActionButton btLotacion;
+
 
 
     @Override
@@ -72,6 +93,7 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
         });
 
         centrosListMapsPresenter = new CentrosListMapsPresenter(this);
+
         gps();
     }
 
@@ -113,14 +135,6 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
                 .withTextField(title);
         pointAnnotationManager.create(pointAnnotationOptions);
     }
-
-    /*public void onStyleLoaded(@NonNull Style style) {
-        addMarker(inventory.getLatitude(), inventory.getLongitude(), String.valueOf(inventory.getId()), R.mipmap.ic_centro_mayores_foreground);
-        setCameraPosition(inventory.getLatitude(), inventory.getLongitude());
-        gps();
-
-
-    }*/
 
     /**
      * Fija la camara del mapa donde nosotros queramos, asi el mapa arranca desde ese punto
@@ -191,9 +205,31 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
         }
     }
 
+    public void getRoute(View view){
+            Point origin = Point.fromLngLat(lastCentro.getLongitude(), lastCentro.getLatitude());
+            Point destination = Point.fromLngLat(gpsLongitude, gpsLatitude);
+            calculateRoute(origin, destination);
+        }
+
+    private void calculateRoute(Point origin, Point destination) {
+        RouteOptions routeOptions = RouteOptions.builder()
+                .baseUrl(Constants.BASE_API_URL)
+                .user(Constants.MAPBOX_USER)
+                .profile(DirectionsCriteria.PROFILE_DRIVING)
+                .steps(true)
+                .coordinatesList(List.of(origin, destination))
+                .build();
+        MapboxDirections directions = MapboxDirections.builder()
+                .routeOptions(routeOptions)
+                .accessToken(getString(R.string.mapbox_access_token))
+                .build();
+        directions.enqueueCall(this);
+    }
+
     @Override
     public void showCentros(List<Centro> centros) {
         centroList.addAll(centros);
+        lastCentro = centroList.get(centroList.size() - 1);
         addCenterToMap(centroList);
     }
 
@@ -204,6 +240,32 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
 
     @Override
     public void onStyleLoaded(@NonNull Style style) {
+           /* addMarker(lastCentro.getLatitude(), lastCentro.getLongitude(), String.valueOf(lastCentro.getId()), R.mipmap.ic_centro_mayores_foreground);
+            setCameraPosition(lastCentro.getLatitude(), lastCentro.getLongitude());
+            gps();*/
+    }
+
+    @Override
+    public void onResponse(Call<DirectionsResponse> call, Response<DirectionsResponse> response) {
+        DirectionsRoute mainRoute = response.body().routes().get(0);
+        mapView.getMapboxMap().getStyle(style -> {
+            LineString routeLine = LineString.fromPolyline(mainRoute.geometry(), PRECISION_6);
+
+            GeoJsonSource routeSource = new GeoJsonSource.Builder("trace-source")
+                    .geometry(routeLine)
+                    .build();
+            LineLayer routeLayer = new LineLayer("trace-leyer", "trace-source")
+                    .lineWidth(7.f)
+                    .lineColor(Color.BLUE)
+                    .lineOpacity(1f);
+            SourceUtils.addSource(style, routeSource);
+            LayerUtils.addLayer(style, routeLayer);
+        });
+    }
+
+
+    @Override
+    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
 
     }
 }
