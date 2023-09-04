@@ -43,6 +43,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="@string/tvNombre"
                 app:endIconMode="clear_text">
 
@@ -73,6 +74,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="@string/tvApellidos"
                 app:endIconMode="clear_text">
 
@@ -108,6 +110,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="@string/tvDni"
                 app:endIconMode="clear_text">
 
@@ -162,6 +165,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="false"
                 android:hint="@string/tvCategoria"
                 app:endIconMode="clear_text">
 
