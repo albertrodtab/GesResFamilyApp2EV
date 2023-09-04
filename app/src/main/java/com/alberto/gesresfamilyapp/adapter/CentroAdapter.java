@@ -24,7 +24,7 @@ import com.alberto.gesresfamilyapp.view.centro.RegisterCentroView;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
-import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.maps.MapView;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
 
 

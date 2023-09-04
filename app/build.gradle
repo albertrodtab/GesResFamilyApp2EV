@@ -16,6 +16,10 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    configurations.all {
+        resolutionStrategy.force 'com.mapbox.mapboxsdk:mapbox-android-core:5.0.0'
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -51,8 +55,14 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-    implementation 'com.mapbox.maps:android:10.9.1'
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.7.0'
+    implementation 'com.mapbox.maps:android:10.10.0'
+    implementation 'com.mapbox.navigation:core:2.11.0'
+    implementation 'com.mapbox.navigation:android:2.11.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
+    implementation 'androidx.navigation:navigation-fragment:2.5.2'
+    implementation 'androidx.navigation:navigation-ui:2.5.2'
+
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
