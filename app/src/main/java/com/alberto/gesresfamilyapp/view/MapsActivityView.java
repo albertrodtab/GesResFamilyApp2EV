@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.alberto.gesresfamilyapp.R;
+import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
 import com.alberto.gesresfamilyapp.contract.centro.CentrosListMapsContract;
 import com.alberto.gesresfamilyapp.domain.Centro;
 import com.alberto.gesresfamilyapp.presenter.centro.CentrosListMapsPresenter;
@@ -65,7 +66,7 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
     public static List<Centro> centroList = new ArrayList<>();
     public Centro lastCentro;
     private CentrosListMapsPresenter centrosListMapsPresenter;
-    private FloatingActionButton btLotacion;
+    private CentroAdapter adapter;
 
 
 
@@ -75,6 +76,8 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        adapter = new CentroAdapter(this, centroList);
 
         mapView = findViewById(R.id.mapView); //cargamos el mapa
         mapView.getMapboxMap().loadStyleUri(Style.MAPBOX_STREETS, this);
@@ -231,6 +234,8 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
         centroList.addAll(centros);
         lastCentro = centroList.get(centroList.size() - 1);
         addCenterToMap(centroList);
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override
