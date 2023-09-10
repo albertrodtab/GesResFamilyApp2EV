@@ -147,6 +147,7 @@ public class DetailsProfesionalView extends AppCompatActivity implements Details
         //} else {
         //    etFechaNac.setText(""); // or provide a default value or handle the case when fechaNacimiento is null
         //}
+        loadImage(profesional.getPhotoUri());
     }
 
     /*//usando la libreria Glide

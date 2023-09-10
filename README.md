@@ -8,6 +8,18 @@ Debes diseñar e implementar una aplicación para dispositivo móvil Android que
 
 Junto con el desarrollo de la aplicación se entregará un enunciado con el nombre de la aplicación y un texto que explique el propósito de la aplicación y sus características. 
 
+Esta APP es completamente funcional, se puede instalar en un movil y consumir con la misma la API 
+desarrollada en la aplicación de ACCESO A DATOS. 
+
+Para ello la APi se encuentra desplegada en un servidor gratuito, KOYEB, y podemos consumirla sin
+necesidad de estar conectado en un entorno local. Para ello simplemente al configurar la conexión, de 
+retrofit con la API debemos dirigirla a la dirección raiz donde se encuentra la API.
+https://gesresapi-albertrodtab.koyeb.app/
+https://app.koyeb.com/
+
+La base de datos también se encuentra desplegada en otro servidor gratuito en este caso CLEVER CLOUD
+https://www.clever-cloud.com/
+
 ## Requisitos (1 pto cada uno, obligatorios)
 
   * ✔ La aplicación deberá consumir la API diseñada y desarrollada en la asignatura de Acceso a Datos. Al menos 2 operaciones de cada uno de estos métodos: POST, GET, PUT y DELETE. Al menos una de ellas permitirá listar información 

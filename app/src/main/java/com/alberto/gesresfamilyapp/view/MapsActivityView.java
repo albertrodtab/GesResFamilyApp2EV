@@ -104,6 +104,7 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
     protected void onResume() {
         super.onResume();
         centrosListMapsPresenter.loadAllCentros();
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -190,18 +191,12 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
 
     }
 
-    /**
-     * Metodo para sacar una lista de puuentes con un for para crear un point por cada puente con la longitude y latitude mas el nombre del puente
-     *
-     * @param
-     */
     private void addCenterToMap(List<Centro> centros) {
         for (Centro centro : centros) {
             Point point = Point.fromLngLat(centro.getLongitude(), centro.getLatitude());
             //addMarker(point, centro.getNombre()); //le pasamos el metodo que crea el marker y ponemos el point y nombre del centro       }
 
             addMarker(centro.getLatitude(), centro.getLongitude(), centro.getNombre(), R.mipmap.ic_centro_mayores_foreground);
-
 
             Centro lastCentro = centros.get(centros.size() - 1); // recogemos el ultimo centro
             setCameraPosition(lastCentro.getLatitude(), lastCentro.getLongitude()); //Fijamos la camara del mapa en el ultimo centro
@@ -231,10 +226,10 @@ public class MapsActivityView extends AppCompatActivity implements CentrosListMa
 
     @Override
     public void showCentros(List<Centro> centros) {
+        centroList.clear();
         centroList.addAll(centros);
         lastCentro = centroList.get(centroList.size() - 1);
         addCenterToMap(centroList);
-        adapter.notifyDataSetChanged();
 
     }
 

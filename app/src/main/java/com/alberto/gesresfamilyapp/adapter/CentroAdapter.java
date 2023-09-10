@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.textfield.TextInputLayout;
 import com.mapbox.maps.MapView;
 import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.List;
@@ -93,6 +94,21 @@ public class CentroAdapter extends RecyclerView.Adapter<CentroAdapter.CentroHold
                     .load(R.drawable.icons8_city_buildings_100)
                     .into(holder.centroImagen);
         }
+
+        /*// Cargar y mostrar la foto en el ImageView utilizando Picasso
+        String photoUriString = centro.getPhotoUri();
+        if (photoUriString != null) {
+            Uri photoUri = Uri.parse(photoUriString);
+            Picasso.get()
+                    .load(photoUri)
+                    .into(holder.centroImagen);
+        } else {
+            // Mostrar una imagen de placeholder si no hay foto disponible
+            Picasso.get()
+                    .load(R.drawable.icons8_city_buildings_100)
+                    .into(holder.centroImagen);
+        }*/
+
     }
 
     @Override

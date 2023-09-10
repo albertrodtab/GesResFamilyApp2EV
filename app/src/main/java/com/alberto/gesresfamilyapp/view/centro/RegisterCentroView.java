@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat;
 import androidx.room.Room;
 
 import com.alberto.gesresfamilyapp.R;
+import com.alberto.gesresfamilyapp.adapter.CentroAdapter;
 import com.alberto.gesresfamilyapp.contract.centro.ModifyCentroContract;
 import com.alberto.gesresfamilyapp.contract.centro.RegisterCentroContract;
 import com.alberto.gesresfamilyapp.db.AppDatabase;
@@ -100,6 +101,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
     private double gpsLatitude;
     private double gpsLongitude;
     private Point pointCentro;
+    private CentroAdapter adapter;
 
 
 
@@ -215,6 +217,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         cbWifi.setChecked(centro.getTieneWifi());
 
 
+
         //recupero la información de coordenadas del centro y lo pinto en el mapa y centro el foco en el
         pointCentro = Point.fromLngLat(centro.getLongitude(),centro.getLatitude());
         setCameraPosition(centro.getLongitude(), centro.getLatitude()); //Fijamos la camara en la posicion del centro
@@ -270,8 +273,7 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
         String numRegistro = tilNumRegistro.getEditText().getText().toString();
         String telefono = tilTelefono.getEditText().getText().toString();
         String mail = tilEmail.getEditText().getText().toString();
-        double latitude = centro.getLatitude();
-        double longitude = centro.getLongitude();
+
         //String direccion = etDireccion.getText().toString();
         //String numRegistro = etNumRegistro.getText().toString();
         //String telefono = etTelefono.getText().toString();
@@ -304,8 +306,8 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
             centro.setTelefono(telefono);
             centro.setEmail(mail);
             centro.setTieneWifi(tieneWifi);
-            centro.setLatitude(point.latitude());
-            centro.setLongitude(point.longitude());
+            centro.setLatitude(pointCentro.latitude());
+            centro.setLongitude(pointCentro.longitude());
 
 
 
@@ -343,14 +345,16 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
             }
 
         } else {
+            double latitude = point.latitude();
+            double longitude = point.longitude();
             centro.setNombre(nombre);
             centro.setDireccion(direccion);
             centro.setNumRegistro(numRegistro);
             centro.setTelefono(telefono);
             centro.setEmail(mail);
             centro.setTieneWifi(tieneWifi);
-            centro.setLatitude(point.latitude());
-            centro.setLongitude(point.longitude());
+            centro.setLatitude(latitude);
+            centro.setLongitude(longitude);
 
             //Guardamos el archivo en el almacenamiento
             //saveBitmapToFile(imageBitmap, imageFile);
@@ -396,8 +400,8 @@ public class RegisterCentroView extends AppCompatActivity implements RegisterCen
                 if (!imageOK) {
                     Toast.makeText(this, "por favor toma una foto", Toast.LENGTH_LONG).show();
                 }
-
             }*/
+
         }
 
         //db.close();}
